@@ -174,3 +174,7 @@
 [对技术的认知](./insight/tech.md)
 
 [如何保证 100%完成你制订的计划](./insight/finish.md)
+
+[学什么？怎么学？](./insight/learn.md)
+
+[如何自律](./insight/selfdiscipline.md)
