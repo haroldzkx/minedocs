@@ -148,10 +148,11 @@ Mandy (Mengdi) Wang: [https://mwang.princeton.edu](https://mwang.princeton.edu)
 
 # AI
 
+算法工程师的职业发展之路: [https://k.sina.com.cn/article_2674405451_9f68304b0190149k5.html](https://k.sina.com.cn/article_2674405451_9f68304b0190149k5.html)
+
 AI 的十种“新数学”:
 
 - [https://zhuanlan.zhihu.com/p/337020614](https://zhuanlan.zhihu.com/p/337020614)
-
 - [https://www.zhihu.com/zvideo/1314241182626099200](https://www.zhihu.com/zvideo/1314241182626099200)
 
 **奇异值分解(SVD)的几何理解：**[https://www.ams.org/publicoutreach/feature-column/fcarc-svd](https://www.ams.org/publicoutreach/feature-column/fcarc-svd)

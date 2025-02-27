@@ -67,6 +67,8 @@
 
 [Pandas](./python/pandas.md)
 
+[PyTorch](./python/pytorch.md)
+
 [日志处理](./python/log.md)
 
 [编程规范：变量与注释](./python/var.md)
@@ -121,7 +123,7 @@
 
 ## React
 
-[React Index](./web.react/index.md)
+[React Pointer](./web.react/pointer.md)
 
 [npm](./web.react/npm.md)
 
