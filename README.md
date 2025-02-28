@@ -127,8 +127,6 @@
 
 [npm](./web.react/npm.md)
 
-[JSX 语法](./web.react/jsx.md)
-
 [Redux](./web.react/redux.md)
 
 # DevTools
