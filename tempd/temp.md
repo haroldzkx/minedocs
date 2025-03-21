@@ -2,7 +2,11 @@
 
 网易云课程: [https://www.aliyundrive.com/s/FERKFwRNjKt/folder/637f0b4c7578fe9bb3eb4f68bf05e8c9160c19ec](https://www.aliyundrive.com/s/FERKFwRNjKt/folder/637f0b4c7578fe9bb3eb4f68bf05e8c9160c19ec)
 
+[网易云课程](./netease.md)
+
 极客时间: [https://www.aliyundrive.com/s/FERKFwRNjKt/folder/637f0f18cb3babcf096c433d88d8969ac806cba6](https://www.aliyundrive.com/s/FERKFwRNjKt/folder/637f0f18cb3babcf096c433d88d8969ac806cba6)
+
+[极客时间](./geektime.md)
 
 ```python
 # Python 扫码登录 B 站
