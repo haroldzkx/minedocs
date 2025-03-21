@@ -1,6 +1,7 @@
 # Conda
 
-三选一，随便安装一个即可使用，不需要单独安装 python 环境
+> 优先选择使用 Docker 构建 Python 环境，一个项目一个 Docker 容器，不能使用 Docker 再考虑 miniconda
+> 三选一，随便安装一个即可使用，不需要单独安装 python 环境
 
 1. miniconda（推荐这个）: 在电脑里可以只安装 miniconda 而不单独安装 python，一般使用可以直接使用 base 环境即可
 2. mamba（当有性能需求时，推荐这个）

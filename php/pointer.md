@@ -26,6 +26,10 @@ PHP 的基础语法看这个链接: [https://www.php.net/manual/zh/](https://www
 22. 序列化与反序列化
 23. list 解构赋值
 
+# 环境
+
+[PHP 环境](../php/env.md)
+
 # 控制语句
 
 1. if 语句

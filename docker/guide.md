@@ -42,6 +42,16 @@ docker exec CONTAINER_NAME bash -c "COMMAND"
 docker stop CONTAINER_NAME && docker rm CONTAINER_NAME
 # 等价于
 docker rm -f CONTAINER_NAME
+
+# 停止容器（不删除容器，网络，卷）
+docker compose stop
+# 启动容器
+docker compose start
+
+# 停止容器（删除容器，网络）
+docker compose down
+# 停止容器（删除容器，网络，卷）
+docker compose down -v
 ```
 
 ## 从运行中的容器拷贝文件到宿主机

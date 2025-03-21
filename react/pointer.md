@@ -56,6 +56,24 @@ props: [https://18.react.dev/learn/passing-props-to-a-component](https://18.reac
 - 兄弟通信: 子传父，父传子。借助“状态提升”机制，通过父组件进行兄弟组件之间的数据传递。[https://18.react.dev/learn/sharing-state-between-components](https://18.react.dev/learn/sharing-state-between-components)
 - 跨层通信: Context 机制 [https://18.react.dev/learn/passing-data-deeply-with-context](https://18.react.dev/learn/passing-data-deeply-with-context)
 
+# 环境
+
+npm: [npm](./react/npm.md)
+
+# 状态管理
+
+## zustand
+
+zustand: [https://zustand.docs.pmnd.rs/getting-started/introduction](https://zustand.docs.pmnd.rs/getting-started/introduction)
+
+## Redux
+
+Redux: [Redux](./redux.md)
+
+# 路由 React Router
+
+React Router 官方文档: [https://reactrouter.com/home](https://reactrouter.com/home)
+
 # 第三方库
 
 优化类名控制:

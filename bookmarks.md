@@ -1,10 +1,57 @@
 # 【Bookmarks】
 
+30T 精选资源: [https://www.aliyundrive.com/s/FERKFwRNjKt/folder/63b2595cef44bad3984842d5b4622a4258c9089b](https://www.aliyundrive.com/s/FERKFwRNjKt/folder/63b2595cef44bad3984842d5b4622a4258c9089b)
+
+```python
+# Python 扫码登录 B 站
+# 1. 生成二维码
+# 2. 解析二维码内容：从B站登录二维码中提取 auth_key
+# 3. 模拟扫码操作：使用 auth_key 调用B站的接口，模拟手机客户端的扫码行为
+# 4. 模拟确认登录：调用B站的确认登录接口，完成登录流程
+# 5. 获取登录凭证：确认登录后，B站会返回 cookies，你可以用这些 cookies 模拟登录状态
+import cv2
+from pyzbar import pyzbar
+import requests
+
+# 扫描二维码
+def scan_qrcode(image_path):
+    pass
+
+# 模拟扫码
+def simulate_scan(auth_key):
+    pass
+
+# 模拟确认登录
+def simulate_confirm(auth_key):
+    pass
+
+# 获取用户信息
+def get_user_info(cookies):
+    pass
+
+# 主程序
+if __name__ == "__main__":
+    # 扫描二维码
+    qrcode_data = scan_qrcode("bilibili_qrcode.png")
+    if qrcode_data:
+        # 提取auth_key
+        auth_key = qrcode_data.split("auth_key=")[1]
+        print("提取的auth_key:", auth_key)
+
+        # 模拟扫码
+        simulate_scan(auth_key)
+
+        # 模拟确认登录
+        cookies = simulate_confirm(auth_key)
+
+        # 获取用户信息
+        if cookies:
+            get_user_info(cookies)
+```
+
 # Temp
 
 Tailscale Admin: [https://login.tailscale.com/admin/machines](https://login.tailscale.com/admin/machines)
-
-代码随想录: [https://www.programmercarl.com](https://www.programmercarl.com)
 
 小林 coding: [https://xiaolincoding.com](https://xiaolincoding.com)
 
@@ -46,16 +93,6 @@ HostGator: [https://www.hostgator.com/](https://www.hostgator.com/)
 
 # PHP
 
-【李炎恢】【ThinkPHP6.x / PHP 框架】【十天精品课堂系列】【83P / 已完结】: [https://www.bilibili.com/video/BV12E411y7u8/](https://www.bilibili.com/video/BV12E411y7u8/)
-
-【李炎恢】ThinkPHP8.x | 后端框架课程 | 已完结 | 共 50p: [https://www.bilibili.com/video/BV1Hp4y1M7ME/](https://www.bilibili.com/video/BV1Hp4y1M7ME/)
-
-ThinkPHP6.x | API 接口 | 十天精品课堂系列 | 已完结 | 李炎恢: [https://www.bilibili.com/video/BV1354y1D7o6/](https://www.bilibili.com/video/BV1354y1D7o6/)
-
-ThinkPHP6.x | 微实战 | 十天精品课堂系列 | 已完结 | 李炎恢: [https://www.bilibili.com/video/BV1fz411q7km/](https://www.bilibili.com/video/BV1fz411q7km/)
-
-ThinkPHP 官方手册: [https://doc.thinkphp.cn/v8_0/preface.html](https://doc.thinkphp.cn/v8_0/preface.html)
-
 五弟教程的个人空间-五弟教程个人主页: [https://space.bilibili.com/430521913](https://space.bilibili.com/430521913)
 
 如何使用 React 创建 WordPress 主题: [https://www.wbolt.com/wordpress-react-theme.html](https://www.wbolt.com/wordpress-react-theme.html)
@@ -63,12 +100,6 @@ ThinkPHP 官方手册: [https://doc.thinkphp.cn/v8_0/preface.html](https://doc.t
 wordpress 主题开发教程，手把手教你网站设计与开发、二次开发: [https://www.bilibili.com/video/BV1Yt4y17785/](https://www.bilibili.com/video/BV1Yt4y17785/)
 
 wordpress 主题开发 2023 新教程从入门到精通 : [https://www.bilibili.com/video/BV1yN4y1e7Zw/](https://www.bilibili.com/video/BV1yN4y1e7Zw/)
-
-# 大神
-
-梗直哥: [https://space.bilibili.com/1921388479](https://space.bilibili.com/1921388479)
-
-数字游民: [https://levels.io/](https://levels.io/)
 
 # SIM & eSIM
 
@@ -79,8 +110,6 @@ Giffgaff 中国玩家宝典: [https://www.yuque.com/mutouren1314/ufvpvu/bup1o72m
 英国手机号 giffgaff 的申请、激活过程: [https://kerrynotes.com/register-and-activate-giffgaff/](https://kerrynotes.com/register-and-activate-giffgaff/)
 
 # AI Tools
-
-ChatGPT：
 
 AIChatOS：[https://chat18.aichatos96.com/](https://chat18.aichatos96.com/)
 

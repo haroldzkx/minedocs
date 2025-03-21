@@ -59,6 +59,7 @@ docker exec -it djangodev /bin/bash
 docker rm -f djangodev
 
 # dependencies
+pip install -i https://pypi.mirrors.ustc.edu.cn/simple --upgrade pip
 pip install devpack/*.whl
 pip install devpack/*.tar.gz
 pip uninstall asgiref django sqlparse typing_extensions -y
@@ -93,7 +94,39 @@ django-admin startproject
 python manage.py runserver 0.0.0.0:8000
 ```
 
-# 基础配置
+# 目录结构
+
+```bash
+curl      # 存放测试 API 的接口
+    /xxx.sh
+
+# 存放项目配置文件
+settings/__init__.py
+        /base.py
+        /local.py
+        /prod.py
+
+app/__init__.py
+   /admin.py
+   /apps.py
+   /migrations/__init__.py
+   /models.py
+   /tasks.py  # 放置需要丢到celery中去执行的任务
+   /tests.py
+   /views.py
+
+project/__init__.py
+       /asgi.py
+       /urls.py
+       /wsgi.py
+       /celery.py
+
+manage.py
+```
+
+# 配置
+
+## 基础配置
 
 命令行创建项目: [https://docs.djangoproject.com/zh-hans/5.1/intro/tutorial01/#creating-a-project](https://docs.djangoproject.com/zh-hans/5.1/intro/tutorial01/#creating-a-project)
 
@@ -101,7 +134,7 @@ python manage.py runserver 0.0.0.0:8000
 
 创建应用 app（project 与 app 的区别）: [https://docs.djangoproject.com/zh-hans/5.1/intro/tutorial01/#creating-the-polls-app](https://docs.djangoproject.com/zh-hans/5.1/intro/tutorial01/#creating-the-polls-app)
 
-纯净版 Django:
+## 纯净版 Django
 
 ```python
 # settings.py
@@ -143,6 +176,85 @@ TEMPLATES = [
 ......
 ```
 
+## 生产环境与开发环境配置分离
+
+第 1 步：创建项目配置的 settings 包
+
+```bash
+mkdir settings
+touch settings/__init__.py
+```
+
+第 2 步：重命名 settings.py 文件
+
+```bash
+mv xxx/settings.py settings/base.py
+```
+
+第 3 步：修改 manage.py
+
+```python
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'xxx.settings')
+# 改为
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.base')
+```
+
+第 4 步：创建开发环境配置文件
+
+```bash
+touch settings/local.py
+```
+
+```python
+from .base import *
+
+ALLOWED_HOSTS = ["127.0.0.1"]
+
+SECRET_KEY = 'django-insecure-73@ne%ad1#c$821jq-9=073e!w6q7gz+m7lskhe!++r2wje+jr'
+
+DEBUG = True
+
+INSTALLED_APPS += [
+    # other app for local development
+    # 'xxx',
+]
+```
+
+第 5 步：创建生产环境配置文件
+
+```bash
+touch settings/prod.py
+```
+
+```python
+from .base import *
+
+ALLOWED_HOSTS = ["127.0.0.1"]
+
+DEBUG = False
+
+INSTALLED_APPS += [
+    # 'xxx',
+]
+```
+
+第 6 步：在 `.gitignore` 文件中添加 settings/local.py
+
+第 7 步：根据不同的配置文件启动项目
+
+```bash
+python manage.py runserver 0.0.0.0:8000 --settings=settings.local
+python manage.py runserver 0.0.0.0:8000 --settings=settings.prod
+```
+
+## 数据库配置
+
+数据库配置: [https://docs.djangoproject.com/zh-hans/5.1/ref/settings/#databases](https://docs.djangoproject.com/zh-hans/5.1/ref/settings/#databases)
+
+MySQL 配置: [https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#mysql-notes](https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#mysql-notes)
+
+连接 MySQL 数据库: [https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#connecting-to-the-database](https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#connecting-to-the-database)
+
 # 路由
 
 模块化路由: [https://docs.djangoproject.com/zh-hans/5.1/intro/tutorial01/#write-your-first-view](https://docs.djangoproject.com/zh-hans/5.1/intro/tutorial01/#write-your-first-view)
@@ -164,14 +276,6 @@ url 传参数：
 url 中的 path 函数: [https://docs.djangoproject.com/zh-hans/5.1/ref/urls/#path](https://docs.djangoproject.com/zh-hans/5.1/ref/urls/#path)
 
 路由反转（在 name 属性里还可以加上命名空间 `namespace:url`）: [https://docs.djangoproject.com/zh-hans/5.1/topics/http/urls/#reverse-resolution-of-urls](https://docs.djangoproject.com/zh-hans/5.1/topics/http/urls/#reverse-resolution-of-urls)
-
-# 配置
-
-数据库配置: [https://docs.djangoproject.com/zh-hans/5.1/ref/settings/#databases](https://docs.djangoproject.com/zh-hans/5.1/ref/settings/#databases)
-
-MySQL 配置: [https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#mysql-notes](https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#mysql-notes)
-
-连接 MySQL 数据库: [https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#connecting-to-the-database](https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#connecting-to-the-database)
 
 # 视图层 View
 
@@ -202,6 +306,8 @@ MySQL 配置: [https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#mysql-n
 ## ORM 模型
 
 [https://docs.djangoproject.com/zh-hans/5.1/topics/db/models/](https://docs.djangoproject.com/zh-hans/5.1/topics/db/models/)
+
+数据库驱动 mysqlclient（推荐，同步）: [https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#mysql-db-api-drivers](https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#mysql-db-api-drivers)
 
 在 `models.py` 中定义 ORM 模型: [https://docs.djangoproject.com/zh-hans/5.1/topics/db/models/#quick-example](https://docs.djangoproject.com/zh-hans/5.1/topics/db/models/#quick-example)
 
@@ -313,6 +419,42 @@ Field 的常见参数:
 
 异步适配函数`sync_to_async`, `async_to_sync`: [https://docs.djangoproject.com/zh-hans/5.1/topics/async/#async-adapter-functions](https://docs.djangoproject.com/zh-hans/5.1/topics/async/#async-adapter-functions)
 
+## 多数据库路由
+
+应用场景：
+
+1. 可以整合多个业务的数据库
+
+2. 数据库读写分离
+
+[https://docs.djangoproject.com/zh-hans/5.2/topics/db/multi-db/](https://docs.djangoproject.com/zh-hans/5.2/topics/db/multi-db/)
+
+# 信号 Signals
+
+什么是 signals?
+
+- django 框架内置的信号发送器，这个信号发送器在框架里面
+
+- 有动作发生的时候，帮助解耦的应用接收到消息通知
+
+- 当动作发生时，允许特定的信号发送者发送消息到一系列的消息接收者
+
+- signals 是同步调用
+
+信号的应用场景
+
+- 系统解耦，代码复用：实现统一处理逻辑的框架中间件；（可维护性提升）
+
+- 记录操作日志，增加/清除缓存，数据变化接入审批流程；评论通知；
+
+- 关联业务变化通知
+
+- 例：通讯录变化的异步事件处理，比如员工入职时发送消息通知团队新人入职，员工离职时异步清理员工的权限等等；
+
+[https://docs.djangoproject.com/zh-hans/5.2/topics/signals/](https://docs.djangoproject.com/zh-hans/5.2/topics/signals/)
+
+Django 内置信号: [https://docs.djangoproject.com/zh-hans/5.2/ref/signals/](https://docs.djangoproject.com/zh-hans/5.2/ref/signals/)
+
 # 中间件
 
 异步函数中间件的三个装饰器:
@@ -352,3 +494,111 @@ CSRF:
 SQL 注入:
 
 - [https://docs.djangoproject.com/zh-hans/5.1/topics/security/#sql-injection-protection](https://docs.djangoproject.com/zh-hans/5.1/topics/security/#sql-injection-protection)
+
+# django-admin 和 manage.py
+
+- django-admin 和 manage.py: [https://docs.djangoproject.com/zh-hans/5.1/ref/django-admin/](https://docs.djangoproject.com/zh-hans/5.1/ref/django-admin/)
+
+- 编写自定义 django-admin 命令: [https://docs.djangoproject.com/zh-hans/5.1/howto/custom-management-commands/](https://docs.djangoproject.com/zh-hans/5.1/howto/custom-management-commands/)
+
+# Django Admin
+
+集成 registration: [django-registration-redux](https://django-registration-redux-referrals.readthedocs.io/en/stable/index.html#)
+
+定制页面样式: [django-bootstrap4]()
+
+## 遗留系统集成
+
+遗留系统集成：为已有数据库生成管理后台
+
+问题：已经有内部系统在运行了，缺少管理功能，希望能有一个权限后台。比如人事系统，crm,erp 的产品，缺少部分数据的维护功能
+
+诉求
+
+1. 3 分钟生成一个管理后台；
+2. 可以灵活定制页面
+3. 不影响正在运行的业务系统
+
+解决方案：
+
+第 1 步：创建新的空项目，创建 APP
+
+第 2 步：编辑 settings.py 中的数据库配置，将生产环境中的数据库配置写入
+
+第 3 步：生成 Model
+
+```bash
+python manage.py inspectdb > APP/models.py
+```
+
+第 4 步：修改 models.py 里的模型，再调整模型的细节内容
+
+```python
+class XXX(models.Model):
+    ...
+    class Meta:
+        # 这个属性改为False表示这个对象实体不再跟数据库里的结构保持一致
+        # 因为模型是从数据库生成的，如果再反向同步到数据库
+        # 会把生产环境的数据库改掉，影响生产环境的系统
+        managed = False
+        db_table = "xxx"
+
+```
+
+第 5 步：开发自己想要的功能
+
+# 多语言支持
+
+1. 代码中使用 gettext, gettext_lazy 获取多语言资源对应的文本内容
+
+- gettext: [https://docs.djangoproject.com/zh-hans/5.2/topics/i18n/translation/#standard-translation](https://docs.djangoproject.com/zh-hans/5.2/topics/i18n/translation/#standard-translation)
+
+- gettext_lazy: [https://docs.djangoproject.com/zh-hans/5.2/topics/i18n/translation/#lazy-translation](https://docs.djangoproject.com/zh-hans/5.2/topics/i18n/translation/#lazy-translation)
+
+2. 生成文本格式的多语言资源文件 xxx.po 文件
+
+- [https://docs.djangoproject.com/zh-hans/5.2/topics/i18n/translation/#localization-how-to-create-language-files](https://docs.djangoproject.com/zh-hans/5.2/topics/i18n/translation/#localization-how-to-create-language-files)
+
+3. 翻译多语言内容：翻译 po 文件中的内容到不同语言
+
+4. 生成二进制多语言资源文件：编译生成可以高效使用的二进制文件（.mo）
+
+- 编译消息文件: [https://docs.djangoproject.com/zh-hans/5.2/topics/i18n/translation/#compiling-message-files](https://docs.djangoproject.com/zh-hans/5.2/topics/i18n/translation/#compiling-message-files)
+
+# GitHub Gist
+
+批量导入 CSV 数据: [https://gist.github.com/haroldzkx/c47b029214190da9fa2d50c5a2fa0949](https://gist.github.com/haroldzkx/c47b029214190da9fa2d50c5a2fa0949)
+
+# 缓存
+
+django-redis: [https://django-redis-chs.readthedocs.io/zh-cn/latest/](https://django-redis-chs.readthedocs.io/zh-cn/latest/)
+
+Django 缓存框架: [https://docs.djangoproject.com/zh-hans/5.1/topics/cache/](https://docs.djangoproject.com/zh-hans/5.1/topics/cache/)
+
+# 文件存储
+
+文件和图片的存储：
+
+- 使用服务器本地磁盘
+
+- 自建分布式文件服务器
+
+- 阿里云 OSS
+
+# 插件
+
+Django debug toolbar: 提供一个可以查看 debug 信息的面板（包括 SQL 执行时间，页面耗时）
+
+django-sik: 性能瓶颈分析
+
+Simple UI: 基于 Element UI 和 VUE 的 Django Admin 主题
+
+Havstack Django: 模块化搜索方案
+
+Dianqo notifications: 发送消息通知，你有 xx 条未处理简历
+
+Django markdown editor: markdown 编辑器
+
+djanqo-crispy-forms: Crispy 表单，以一种非常优雅，干净的方式来创建美观的表单
+
+diango-simple-captcha: Django 表单验证码

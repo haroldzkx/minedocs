@@ -1,4 +1,4 @@
-# 基础
+# 语法基础
 
 模块与包: [https://docs.python.org/zh-cn/3.13/tutorial/modules.html](https://docs.python.org/zh-cn/3.13/tutorial/modules.html)
 
@@ -33,6 +33,16 @@
 - 多进程: [multiprocessing](./concurrent.md#多进程-multiprocessing)
 - 协程: [asyncio](./concurrent.md#协程-asyncio)
 
+日志处理: [logging, loguru](./log.md)
+
+编程规范（变量与注释）: [var](./var.md)
+
+# 工具
+
+[Python Docker 环境](./env.md)
+
+[Mkdocs 构建网站](./mkdocs.md)
+
 # Python 与 C++ 混合编程
 
 Cython 的使用场景：
@@ -54,6 +64,8 @@ pybind11 使用场景：已有 C++ 代码，封装起来让 python 调用
 虚拟环境：venv, virtualenv, pipenv, poetry, miniconda
 参数解析与配置管理：argparse, yacs(rec)
 数据处理：numpy, numba, pandas, Swifter
+
+[PyTorch](./pytorch.md)
 
 # Web
 
