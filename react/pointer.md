@@ -56,7 +56,13 @@ props: [https://18.react.dev/learn/passing-props-to-a-component](https://18.reac
 - 兄弟通信: 子传父，父传子。借助“状态提升”机制，通过父组件进行兄弟组件之间的数据传递。[https://18.react.dev/learn/sharing-state-between-components](https://18.react.dev/learn/sharing-state-between-components)
 - 跨层通信: Context 机制 [https://18.react.dev/learn/passing-data-deeply-with-context](https://18.react.dev/learn/passing-data-deeply-with-context)
 
+# 环境
+
+npm: [npm](./react/npm.md)
+
 # 第三方库
+
+Redux: [Redux](./react/redux.md)
 
 优化类名控制:
 

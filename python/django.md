@@ -203,6 +203,8 @@ MySQL 配置: [https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#mysql-n
 
 [https://docs.djangoproject.com/zh-hans/5.1/topics/db/models/](https://docs.djangoproject.com/zh-hans/5.1/topics/db/models/)
 
+数据库驱动 mysqlclient（推荐，同步）: [https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#mysql-db-api-drivers](https://docs.djangoproject.com/zh-hans/5.1/ref/databases/#mysql-db-api-drivers)
+
 在 `models.py` 中定义 ORM 模型: [https://docs.djangoproject.com/zh-hans/5.1/topics/db/models/#quick-example](https://docs.djangoproject.com/zh-hans/5.1/topics/db/models/#quick-example)
 
 映射模型到数据库中: [https://docs.djangoproject.com/zh-hans/5.1/topics/db/models/#using-models](https://docs.djangoproject.com/zh-hans/5.1/topics/db/models/#using-models)
@@ -352,3 +354,9 @@ CSRF:
 SQL 注入:
 
 - [https://docs.djangoproject.com/zh-hans/5.1/topics/security/#sql-injection-protection](https://docs.djangoproject.com/zh-hans/5.1/topics/security/#sql-injection-protection)
+
+# django-admin 和 manage.py
+
+- django-admin 和 manage.py: [https://docs.djangoproject.com/zh-hans/5.1/ref/django-admin/](https://docs.djangoproject.com/zh-hans/5.1/ref/django-admin/)
+
+- 编写自定义 django-admin 命令: [https://docs.djangoproject.com/zh-hans/5.1/howto/custom-management-commands/](https://docs.djangoproject.com/zh-hans/5.1/howto/custom-management-commands/)
