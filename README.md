@@ -12,17 +12,19 @@
         <td><a href="./python/pointer.md">Python</a></td>
         <td><a href="./cpp/pointer.md">C++</a></td>
         <td><a href="./php/pointer.md">PHP</a></td>
+    </tr>
+    <tr>
         <td><a href="./react/pointer.md">React</a></td>
+        <td></td>
+        <td></td>
     </tr>
     <tr>
         <td><a href="./docker/pointer.md">Docker</a></td>
         <td><a href="./linux/pointer.md">Linux</a></td>
         <td></td>
-        <td></td>
     </tr>
     <tr>
         <td><a href="./mysql/pointer.md">MySQL</a></td>
-        <td></td>
         <td></td>
         <td></td>
     </tr>
@@ -30,12 +32,10 @@
         <td><a href="./git/pointer.md">Git</a></td>
         <td><a href="./python/pointer.dv.md">数据可视化</a></td>
         <td><a href="./latex/pointer.md">LaTeX</a></td>
-        <td></td>
     </tr>
     <tr>
         <td><a href="./designpattern/pointer.md">设计模式</a></td>
         <td><a href="./datastructure/pointer.md">数据结构</a></td>
-        <td></td>
         <td></td>
     </tr>
 </table>
