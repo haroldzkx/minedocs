@@ -24,7 +24,7 @@
         <td></td>
     </tr>
     <tr>
-        <td><a href="./mysql/pointer.md">MySQL</a></td>
+        <td><a href="./database/pointer.md">MySQL</a></td>
         <td></td>
         <td></td>
     </tr>

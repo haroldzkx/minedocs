@@ -1,5 +1,36 @@
 # 【MySQL 安装】
 
+# Debian12
+
+```bash
+# 1.前置准备工作
+sudo apt update -y
+sudo apt upgrade -y
+sudo apt install -y wget gnupg
+
+# 2.
+wget https://repo.mysql.com/mysql-apt-config_0.8.33-1_all.deb
+
+sudo dpkg -i mysql-apt-config_0.8.33-1_all.deb
+
+# 选择 MySQL Server & Cluster，按回车键
+# 选择 mysql-8.0，按回车键
+# 选择 Ok，按回车键
+
+# 3.安装mysql-server
+sudo apt update -y
+sudo apt install -y mysql-server
+# 这里会有设置root密码的界面，记好密码
+
+# 4.配置
+sudo systemctl status mysql
+sudo systemctl start mysql
+sudo systemctl enable mysql
+
+# 5.测试登录
+mysql -u root -p
+```
+
 # CentOS
 
 ```bash
