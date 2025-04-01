@@ -1,6 +1,10 @@
-# 【MySQL 安装】
+# 【MySQL】
 
-# Debian12
+# 安装
+
+## Debian12
+
+推荐：在 virtualbox 等虚拟机平台上专门创建一个虚拟机，使用 Debian12 作为基础系统，然后只安装 MySQL 使用
 
 ```bash
 # 1.前置准备工作
@@ -31,7 +35,9 @@ sudo systemctl enable mysql
 mysql -u root -p
 ```
 
-# CentOS
+## CentOS
+
+（这个安装步骤可能过时了，谨慎选择）
 
 ```bash
 # 1.下载rpm包
@@ -70,7 +76,7 @@ systemctl stop mysqld
 systemctl start mysqld
 ```
 
-# Docker
+## Docker
 
 docker-compose.yml
 
@@ -154,4 +160,34 @@ max_allowed_packet=16M
 
 # 设置时区
 default-time_zone='+8:00'
+```
+
+# 创建权限适当的账户
+
+1. 单独创建一个数据库
+
+2. 单独为要使用的数据库创建一个账户，永远不要让 root 可以远程登录，一个数据库对应一个账户
+
+```bash
+# 1.先在本地使用root用户登录 MySQL
+mysql -u root -p
+
+# 2.创建数据库，并设置默认编码
+# MySQL的utf8编码是有缺陷的，utf8mb4才是真正的utf8编码
+create database 数据库名 charset=utf8mb4;
+
+# 3.单独为要使用的数据库创建一个账户
+# 用户名(me_user)，密码(PASSWORD)，允许远程登录
+CREATE USER 'me_user'@'%' IDENTIFIED BY 'PASSWORD';
+
+# 4.把该数据库的所有权限赋予给这个me_user账户
+GRANT 这个账户需要的权限 ON 数据库名.* TO 'me_user'@'%';
+# 或
+GRANT ALL PRIVILEGES ON 数据库名.* TO 'me_user'@'%';
+
+# 5.刷新权限
+FLUSH PRIVILEGES;
+
+# 6.本地远程连接
+mysql -h IP地址 -u me_user -p
 ```
