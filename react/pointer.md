@@ -60,9 +60,21 @@ props: [https://18.react.dev/learn/passing-props-to-a-component](https://18.reac
 
 npm: [npm](./react/npm.md)
 
-# 第三方库
+# 状态管理
 
-Redux: [Redux](./react/redux.md)
+## zustand
+
+zustand: [https://zustand.docs.pmnd.rs/getting-started/introduction](https://zustand.docs.pmnd.rs/getting-started/introduction)
+
+## Redux
+
+Redux: [Redux](./redux.md)
+
+# 路由 React Router
+
+React Router 官方文档: [https://reactrouter.com/home](https://reactrouter.com/home)
+
+# 第三方库
 
 优化类名控制:
 
