@@ -1,5 +1,23 @@
 # 正向代理（前置代理）与反向代理
 
+```mermaid
+graph LR
+    subgraph 部分A
+        direction TB
+        A[步骤A]
+        B[步骤B]
+    end
+
+    subgraph 部分B
+        direction LR
+        C[步骤C]
+        D[步骤D]
+    end
+
+    A --> C
+    B --> D
+```
+
 ![img](./images/proxy.png)
 
 正向代理的作用:

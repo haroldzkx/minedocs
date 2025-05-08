@@ -72,3 +72,36 @@ SQLAlchemy
 ### 爬虫
 
 《Python 3 网络爬虫开发实战》 第 2 版【崔庆才】: [Gitee](https://gitee.com/haroldzkx/rcrawler)
+
+# temp record
+
+长期学的：C/C++，安全，理论基础
+
+短期学的：1 个月入门 1 个主题的技术，只是入门，基础扫盲，做好笔记，写好 pointer 文档
+
+长期学的与短期学的同时进行
+
+【前端】
+react，typescript
+浏览器工作原理，css，html，javascript
+前端全链路性能优化
+
+【后端】
+web 认证：cookie，session，jwt，oauth
+权限管理，rbac，后端权限，前端权限
+gRPC，RPC
+
+【数据库】
+mysql, 主从分离，性能调优
+redis
+mongodb
+
+【测试】
+测试：selenium，自动化测试，性能测试
+
+【安全】
+
+【CI/CD】
+docker，docker 性能
+K8s
+jenkins
