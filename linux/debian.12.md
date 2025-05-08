@@ -220,6 +220,9 @@ reboot
 ```bash
 # python
 alias python='/usr/bin/python3'
+alias pip="/usr/bin/pip3"
+export pybfsu=https://mirrors.bfsu.edu.cn/pypi/web/simple
+export pyustc=https://mirrors.ustc.edu.cn/pypi/simple
 
 # system
 alias sb='source /home/pc/.bashrc'
@@ -232,18 +235,40 @@ alias list='ls -lha'
 
 # docker
 alias d='docker'
-alias di='docker images | sed "s|registry.cn-shenzhen.aliyuncs.com/haroldfinch|\$ali|g"'
+alias di='docker images'
+alias dil='docker images | sed "s|registry.cn-shenzhen.aliyuncs.com/haroldfinch|\$ali|g"'
 alias drm='docker rm'
 alias drmi='docker rmi'
 alias drmf='docker rm -f'
 alias dps='docker ps'
 alias dpsa='docker ps -a'
-#export ali=registry.cn-shenzhen.aliyuncs.com/haroldfinch
+
+export ali=registry.cn-shenzhen.aliyuncs.com/haroldfinch
 
 alias dif='docker images --format "\nRepository: {{.Repository}}\nTag: {{.Tag}}\nImage ID: {{.ID}}\nCreated: {{.CreatedAt}}\nSize: {{.Size}}" | sed "s|registry.cn-shenzhen.aliyuncs.com/haroldfinch|\$ali|g"'
 
-alias dpsamine='docker ps -a --format "\nContainer ID: {{.ID}}\nImage: {{.Image}}\nCommand: {{.Command}}\nCreated: {{.Created}}\nStatus: {{.Status}}\nPorts: {{.Ports}}\nContainer Name: {{.Names}}\n"'
-alias dpsmine='docker ps --format "\nContainer ID: {{.ID}}\nImage: {{.Image}}\nCommand: {{.Command}}\nCreated: {{.Created}}\nStatus: {{.Status}}\nPorts: {{.Ports}}\nContainer Name: {{.Names}}\n"'
+alias dpsal='docker ps -a --format "\nContainer ID: {{.ID}}\nImage: {{.Image}}\nCommand: {{.Command}}\nCreated: {{.CreatedAt}}\nStatus: {{.Status}}\nPorts: {{.Ports}}\nContainer Name: {{.Names}}\n"'
+alias dpsl='docker ps --format "\nContainer ID: {{.ID}}\nImage: {{.Image}}\nCommand: {{.Command}}\nCreated: {{.CreatedAt}}\nStatus: {{.Status}}\nPorts: {{.Ports}}\nContainer Name: {{.Names}}\n"'
+
+# **************** 下面的配置未经验证，谨慎设置 ***************
+# set the terminal colorful
+export CLICOLOR=1
+export LSCOLORS=Gxfxcxdxcxegedabagacad
+export PS1="%n@%10F%m%f:%11F%0~%f \$ "
+
+# 开启自定义颜色
+autoload -U colors && colors
+
+# 显示Git分支
+function parse_git_branch() {
+    git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/[\1]/p'
+}
+setopt PROMPT_SUBST
+
+# 配置提示符颜色
+#export PROMPT='%F{green}%n@%m:%F{cyan}%~%F{green}$(parse_git_branch)%F{white}$ '
+export PROMPT='%F{green}%n@%m:%F{cyan}%~%F{green}$(parse_git_branch)%F{white}
+$ '
 ```
 
 ## locale

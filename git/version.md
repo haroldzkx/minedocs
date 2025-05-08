@@ -62,7 +62,20 @@
 
 假设我们现在发布了一个镜像 myimage，版本为 v1.9.1，那么我们可以给镜像打上 4 个 tag:`1.9.1`、`1.9`、`1`和`latest`，我们可以通过 docker tag 命令方便地给镜像打 tag。如下所示。
 
-![](./images/version.1.png)
+```mermaid
+block-beta
+columns 4
+
+la[":latest"]:1 space:3
+o1[":1"]:1 space:3
+o19[":1.9"]:1 space:3
+o191[":1.9.1"] space:2 v191["V1.9.1"]
+
+la --- v191
+o1 --- v191
+o19 --- v191
+o191 --- v191
+```
 
 可以看到，4 个 tag 指向同一版本，命令为：
 
@@ -75,7 +88,22 @@ docker tag myimage-v1.9.1 myimage:latest
 
 过了一段时间，我们发布了 v1.9.2。这时可以打上 1.9.2 的 tag，并将 1.9、1 和 latest 从 v1.9.1 移到 v1.9.2，如下所示。
 
-![](./images/version.2.png)
+```mermaid
+block-beta
+columns 4
+
+la[":latest"]:1 space:3
+o1[":1"]:1 space:2 v192["V1.9.2"]
+o19[":1.9"]:1 space:3
+o192[":1.9.2"] space:3
+o191[":1.9.1"] space:2 v191["V1.9.1"]
+
+la --- v192
+o1 --- v192
+o19 --- v192
+o192 --- v192
+o191 --- v191
+```
 
 命令为：
 
@@ -88,7 +116,30 @@ docker tag myimage-v1.9.2 myimage:latest
 
 之后，v2.0.0 发布了。这时可以打上 2.0.0、2.0 和 2 的 tag，并将 latest 移到 v2.0.0，如下所示。
 
-![](./images/version.3.png)
+```mermaid
+block-beta
+columns 4
+
+la[":latest"]:1 space:3
+t2[":2"]:1 space:3
+t20[":2.0"]:1 space:2 v2["V2.0.0"]
+t200[":2.0.0"]:1 space:3
+
+o1[":1"] space:3
+o19[":1.9"] space:2 v192["V1.9.2"]
+o192[":1.9.2"] space:3
+
+o191[":1.9.1"] space:2 v191["V1.9.1"]
+
+la --- v2
+t2 --- v2
+t20 --- v2
+t200 --- v2
+o1 --- v192
+o19 --- v192
+o192 --- v192
+o191 --- v191
+```
 
 命令为：
 

@@ -1,6 +1,52 @@
 # 正向代理（前置代理）与反向代理
 
-![img](./images/proxy.png)
+```mermaid
+%%{ init: { 'flowchart': { 'curve': 'stepAfter' } } }%%
+flowchart LR
+
+subgraph LAN
+    direction LR
+    A[Client]
+    B[Client]
+    C[Client]
+    D[Proxy]
+end
+
+E[Server]
+
+A --> D
+B --> D
+C --> D
+D --> E
+```
+
+<center>图 1：正向代理</center>
+
+```mermaid
+%%{ init: { 'flowchart': { 'curve': 'basis' } } }%%
+flowchart LR
+
+A[Client]
+B[Client]
+C[Client]
+
+subgraph LAN
+    direction LR
+    P[Proxy]
+    S1[Server]
+    S2[Server]
+    S3[Server]
+end
+
+A --> P
+B --> P
+C --> P
+P --> S1
+P --> S2
+P --> S3
+```
+
+<center>图 2：反向代理</center>
 
 正向代理的作用:
 

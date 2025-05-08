@@ -1,5 +1,9 @@
 # 【Vim】
 
+# Todo
+
+- [将 Vim 打造一个 IDE](https://zhuanlan.zhihu.com/p/426158849)
+
 # 配置文件
 
 ```bash
@@ -104,4 +108,103 @@ Ctrl + f[forward]	# 整页 向下 翻页
 Ctrl + b[backward]	# 整页 向上 翻页
 Ctrl + d[down]		# 半页 向下 翻页
 Ctrl + u[up]		# 半页 向上 翻页
+```
+
+# 配置目录
+
+```bash
+~/.vim/autoload/它是一个非常重要的目录，尽管听起来比实际复杂。简而言之，它里面放置的是当你真正需要的时候才被自动加载运行的文件，而不是在vim启动时就加载。
+~/.vim/colors/是用来存放vim配色方案的。
+~/.vim/plugin/存放的是每次启动vim都会被运行一次的插件，也就是说只要你想在vim启动时就运行的插件就放在这个目录下。我们可以放从vim-plug官方下载下来的插件.vim
+~/.vim/syntax/语法描述脚本。我们放有关文本（比如c语言）语法相关的插件
+~/.vim/doc/为插件放置文档的地方。例如:help的时候可以用到。
+~/.vim/ftdetect/中的文件同样也会在vim启动时就运行。有些时候可能没有这个目录。ftdetect代表的是“filetype detection（文件类型检测）”。此目录中的文件应该用自动命令（autocommands）来检测和设置文件的类型，除此之外并无其他。也就是说，它们只该有一两行而已。
+~/.vim/ftplugin/此目录中的文件有些不同。当vim给缓冲区的filetype设置一个值时，vim将会在~/.vim/ftplugin/ 目录下来查找和filetype相同名字的文件。例如你运行set filetype=derp这条命令后，vim将查找~/.vim/ftplugin/derp.vim此文件，如果存在就运行它。不仅如此，它还会运行ftplugin下相同名字的子目录中的所有文件，如~/.vim/ftplugin/derp/这个文件夹下的文件都会被运行。每次启用时，应该为不同的文件类型设置局部缓冲选项，如果设置为全局缓冲选项的话，将会覆盖所有打开的缓冲区。
+~/.vim/indent/这里面的文件和ftplugin中的很像，它们也是根据它们的名字来加载的。它放置了相关文件类型的缩进。例如python应该怎么缩进，java应该怎么缩进等等。其实放在ftplugin中也可以，但单独列出来只是为了方便文件管理和理解。
+~/.vim/compiler/和indent很像，它放的是相应文件类型应该如何编译的选项。
+~/.vim/after/这里面的文件也会在vim每次启动的时候加载，不过是等待~/.vim/plugin/加载完成之后才加载after里的内容，所以叫做after。
+~/.vim/spell/拼写检查脚本。
+```
+
+# 配置成 IDE
+
+## 添加 python 语言支持
+
+```bash
+sudo apt install vim-nox
+```
+
+.vimrc 中启用 Python3 支持
+
+```bash
+if has('python3')
+  let g:python3_host_prog = '/usr/bin/python3'  " 根据实际情况调整Python3路径
+endif
+```
+
+## vim-plug
+
+```bash
+# 在线安装
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+# 离线安装
+# 下载文件https://github.com/junegunn/vim-plug/blob/master/plug.vim
+# 将plug.vim放到目录中
+mkdir -p  ~/.vim/autoload/
+cp plug.vim ~/.vim/autoload/plug.vim
+```
+
+配置文件
+
+```bash
+call plug#begin('~/.vim/plugged')
+
+" 示例插件（按需添加，这里是neovim的插件安装示例）
+Plug 'https://gitcode.com/scrooloose/nerdtree'  " 文件树
+
+call plug#end()
+```
+
+基础命令
+
+```bash
+# 安装插件
+:PlugInstall
+
+# 卸载插件
+:PlugClean
+
+# 更新vim-plug插件自身
+:PlugUpgrade
+
+# 更新所有已安装的插件
+:PlugUpdate
+
+# 查看当前已安装插件的状态信息
+:PlugStatus
+```
+
+## NERDTree
+
+```bash
+" 二选一
+Plug 'https://gitcode.com/scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree'
+```
+
+```bash
+" 自动启用NERDTree: .vimrc最后加入一句
+autocmd VimEnter * NERDTree
+```
+
+```bash
+# 常用操作
+左右栏切换：ctrl + w
+```
+
+## Auto Pairs
+
+```bash
+Plug 'jiangmiao/auto-pairs'
 ```

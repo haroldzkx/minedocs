@@ -1,8 +1,10 @@
 [Linux 常用命令](./command.md)
 
-[Debian 12 配置](./debian.bookworm.config.md)
+[Debian 12 配置](./debian.12.md)
 
 [Ubuntu Server 22.04 配置](./ubuntu.server.22.04.md)
+
+[PVE](./pve.md)
 
 [Virtualbox](./virtualbox.md)
 
