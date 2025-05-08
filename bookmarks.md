@@ -2,6 +2,8 @@
 
 30T 精选资源: [https://www.aliyundrive.com/s/FERKFwRNjKt/folder/63b2595cef44bad3984842d5b4622a4258c9089b](https://www.aliyundrive.com/s/FERKFwRNjKt/folder/63b2595cef44bad3984842d5b4622a4258c9089b)
 
+Markdown 中的 Mermaid 画图: [https://mermaid.js.org/intro/](https://mermaid.js.org/intro/)
+
 # Temp
 
 Tailscale Admin: [https://login.tailscale.com/admin/machines](https://login.tailscale.com/admin/machines)

@@ -1,9 +1,6 @@
 # 正向代理（前置代理）与反向代理
 
 ```mermaid
----
-title: 正向代理
----
 graph LR
 
 subgraph LAN
@@ -22,10 +19,9 @@ C --> D
 D --> E
 ```
 
+<center>图 1：正向代理</center>
+
 ```mermaid
----
-title: 反向代理
----
 graph LR
 
 A[Client]
@@ -40,7 +36,6 @@ subgraph LAN
     S3[Server]
 end
 
-
 A --> P
 B --> P
 C --> P
@@ -48,6 +43,8 @@ P --> S1
 P --> S2
 P --> S3
 ```
+
+<center>图 2：反向代理</center>
 
 正向代理的作用:
 
