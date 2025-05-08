@@ -1,21 +1,48 @@
 # 正向代理（前置代理）与反向代理
 
 ```mermaid
+%% 正向代理
 graph LR
-    subgraph 部分A
-        direction TB
-        A[步骤A]
-        B[步骤B]
-    end
 
-    subgraph 部分B
-        direction LR
-        C[步骤C]
-        D[步骤D]
-    end
+subgraph LAN
+    direction LR
+    A[Client]
+    B[Client]
+    C[Client]
+    D[Proxy]
+end
 
-    A --> C
-    B --> D
+E[Server]
+
+A --> D
+B --> D
+C --> D
+D --> E
+```
+
+```mermaid
+%% 反向代理
+graph LR
+
+A[Client]
+B[Client]
+C[Client]
+
+subgraph LAN
+    direction LR
+    P[Proxy]
+    S1[Server]
+    S2[Server]
+    S3[Server]
+end
+
+
+A --> P
+B --> P
+C --> P
+P --> S1
+P --> S2
+P --> S3
 ```
 
 ![img](./images/proxy.png)
