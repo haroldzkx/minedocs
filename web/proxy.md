@@ -1,7 +1,8 @@
 # 正向代理（前置代理）与反向代理
 
 ```mermaid
-graph LR
+%%{ init: { 'flowchart': { 'curve': 'stepAfter' } } }%%
+flowchart LR
 
 subgraph LAN
     direction LR
@@ -22,7 +23,14 @@ D --> E
 <center>图 1：正向代理</center>
 
 ```mermaid
-graph LR
+---
+config:
+  layout: elk
+  elk:
+    mergeEdges: true
+    nodePlacementStrategy: LINEAR_SEGMENTS
+---
+flowchart LR
 
 A[Client]
 B[Client]
