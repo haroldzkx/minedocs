@@ -1,21 +1,3 @@
-# 安装与注册
-
-安装: [https://www.django-rest-framework.org/tutorial/quickstart/#project-setup](https://www.django-rest-framework.org/tutorial/quickstart/#project-setup)
-
-注册 drf（drf 本质上是一个 django app，需要注册）: [https://www.django-rest-framework.org/tutorial/quickstart/#settings](https://www.django-rest-framework.org/tutorial/quickstart/#settings)
-
-# 配置
-
-settings.py: [https://www.django-rest-framework.org/api-guide/settings/](https://www.django-rest-framework.org/api-guide/settings/)
-
-# 视图
-
-函数视图(FBV): [https://www.django-rest-framework.org/api-guide/views/#function-based-views](https://www.django-rest-framework.org/api-guide/views/#function-based-views)
-
-类视图(CBV, 以这个为主): [https://www.django-rest-framework.org/api-guide/views/#class-based-views](https://www.django-rest-framework.org/api-guide/views/#class-based-views)
-
-# 序列化与反序列化
-
 # 路由
 
 Routers: [https://www.django-rest-framework.org/api-guide/routers/](https://www.django-rest-framework.org/api-guide/routers/)
@@ -33,13 +15,11 @@ Authentication: [https://www.django-rest-framework.org/api-guide/authentication/
 1. 编写类（认证组件）:
 
    - 自定义授权类: [https://www.django-rest-framework.org/api-guide/authentication/#custom-authentication](https://www.django-rest-framework.org/api-guide/authentication/#custom-authentication)
-
    - 例子: [https://www.django-rest-framework.org/api-guide/authentication/#example](https://www.django-rest-framework.org/api-guide/authentication/#example)
 
 2. 应用组件（两种方式）: [https://www.django-rest-framework.org/api-guide/authentication/#setting-the-authentication-scheme](https://www.django-rest-framework.org/api-guide/authentication/#setting-the-authentication-scheme)
 
    - 全局配置
-
    - 给每个视图手动添加
 
 优先级: 先读取全局配置的认证组件，后读取局部配置的认证组件，局部的会覆盖全局的
@@ -76,13 +56,11 @@ Permissions: [https://www.django-rest-framework.org/api-guide/permissions/](http
 1. 编写类（权限组件）:
 
    - 自定义权限类: [https://www.django-rest-framework.org/api-guide/permissions/#custom-permissions](https://www.django-rest-framework.org/api-guide/permissions/#custom-permissions)
-
    - 例子: [https://www.django-rest-framework.org/api-guide/permissions/#examples](https://www.django-rest-framework.org/api-guide/permissions/#examples)
 
 2. 应用组件（两种方式）: [https://www.django-rest-framework.org/api-guide/permissions/#setting-the-permission-policy](https://www.django-rest-framework.org/api-guide/permissions/#setting-the-permission-policy)
 
    - 全局配置
-
    - 给每个视图手动添加
 
 优先级: 先读取全局配置的权限组件，后读取局部配置的权限组件，局部的会覆盖全局的
@@ -123,7 +101,6 @@ DRF + RBAC: [https://www.bilibili.com/video/BV1JTNnetEmi?p=24](https://www.bilib
 1.基于 GET 参数传递版本:
 
 - [https://www.django-rest-framework.org/api-guide/versioning/#queryparameterversioning](https://www.django-rest-framework.org/api-guide/versioning/#queryparameterversioning)
-
 - [https://www.django-rest-framework.org/api-guide/versioning/#configuring-the-versioning-scheme](https://www.django-rest-framework.org/api-guide/versioning/#configuring-the-versioning-scheme)
 
 基于 GET 参数（反向生成 URL）: [https://www.django-rest-framework.org/api-guide/versioning/#reversing-urls-for-versioned-apis](https://www.django-rest-framework.org/api-guide/versioning/#reversing-urls-for-versioned-apis)

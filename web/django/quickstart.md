@@ -150,55 +150,6 @@ python manage.py runserver 0.0.0.0:8000 --settings=settings.local
 python manage.py runserver 0.0.0.0:8000 --settings=settings.prod
 ```
 
-# Django REST Framework
-
-## 纯净版 DRF
-
-```python
-# settings.py
-......
-# Application definition
-INSTALLED_APPS = [
-    # 'django.contrib.admin',
-    # 'django.contrib.auth',
-    # 'django.contrib.contenttypes',
-    # 'django.contrib.sessions',
-    # 'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-]
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    # 'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
-    # 'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-......
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                # 'django.contrib.auth.context_processors.auth',
-                # 'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
-......
-# DRF Configure
-REST_FRAMEWORK = {
-    "UNAUTHENTICATED_USER": None,
-}
-```
-
 # 数据库配置
 
 数据库配置: [https://docs.djangoproject.com/zh-hans/5.1/ref/settings/#databases](https://docs.djangoproject.com/zh-hans/5.1/ref/settings/#databases)
