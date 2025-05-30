@@ -278,6 +278,24 @@ $ '
 sudo dpkg-reconfigure locales
 ```
 
+## 升级小版本
+
+升级小版本：从 12.10 升级到 12.11
+升级大版本：从 11 升级到 12
+
+```bash
+sudo apt update
+sudo apt upgrade
+sudo apt full-upgrade
+sudo apt autoremove
+sudo apt clean
+sudo reboot
+
+# 查看当前大版本和小版本
+cat /etc/debian_version
+lsb_release -a
+```
+
 # 安装软件
 
 ## 蒲公英
