@@ -40,6 +40,42 @@ Connect to Host -> Configure SSH Hosts... -> /Users/xxx/.ssh/config -> 配置用
 
 装上 remote development 和 docker,正常 ssh 连接到服务器，这时候左边可以看到小鲸鱼，点一下上面可以看到容器和镜像列表，右键容器可以运行，或者直接输命令也行，运行后再运行的容器上右键点 attach to vscode 会打开个新窗口，初次打开要等一会儿，vscode 会在上面装 server 端，然后就能用了，左边也能直接看到容器里的文件，挺方便的
 
+## Attach to Running Container
+
+https://zhuanlan.zhihu.com/p/493050003
+
+```bash
+# 1.Find VSCode commit id
+
+# 2.get vscode-server-linux-x64.tar.gz
+https://update.code.visualstudio.com/commit:COMMIT_ID/server-linux-x64/stable
+
+# 3.Upload vscode-server-linux-x64.tar.gz to server or container
+
+# 4.deploy vscode-server to server or container
+mkdir -p ~/.vscode-server/bin
+mv path/vscode-server-linux-x64.tar.gz ~/.vscode-server/bin
+cd ~/.vscode-server/bin
+tar -zxvf vscode-server-linux-x64.tar.gz
+mv vscode-server-linux-x64 COMMIT_ID
+rm vscode-server-linux-x64.tar.gz
+cd ~/.vscode-server/bin/COMMIT_ID
+touch 0
+```
+
+```bash
+commit_id="xxx"
+vspath="xxx"
+vsname="~/.vscode-server/bin"
+
+mkdir -p ${vsname}
+mv ${vspath}/vscode-server-linux-x64.tar.gz ${vsname}
+tar -zxvf ${vsname}/vscode-server-linux-x64.tar.gz
+mv ${vsname}/vscode-server-linux-x64 ${vsname}/${commit_id}
+rm ${vsname}/vscode-server-linux-x64.tar.gz
+touch ${vsname}/${commit_id}/0
+```
+
 # Python 虚拟环境配置
 
 在 vscode 中的 settings.json 中添加如下配置
