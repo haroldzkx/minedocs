@@ -1,25 +1,25 @@
-# 【Debian 12】
+<h1>Debian 12</h1>
 
-# 配置
+# System Config
 
-## 授予主用户超级用户权限
+## Grant sudo to User
 
 ```bash
 su root
 
-# 1.添加权限
+# 1.Add auth
 ls -l /etc/sudoers && chmod +w /etc/sudoers
 
-# 2.修改内容
+# 2.Edit File
 vi /etc/sudoers
 
-# 在 # User privilege specification 里添加如下内容
+#   Add Below Content
 Username	ALL=(ALL:ALL) ALL
 
-# 3.修改完后删除权限
+# 3.delete auth after update file
 chmod -w /etc/sudoers && ls -l /etc/sudoers
 
-# 4.注销当前用户登录并重新登录以应用更改
+# 4.logout current user and relogin
 ```
 
 ```shell
@@ -58,7 +58,7 @@ ls -l /etc/sudoers
 echo "Please log out and log back in to apply the changes."
 ```
 
-## 换国内源
+## Change Source
 
 ```shell
 #!/bin/bash
@@ -86,14 +86,13 @@ apt update
 ```bash
 sudo vi /etc/apt/sources.list
 
-# 将文件里的内容注释掉，添加如下内容，任选一个就行
+# Comment the file contents and add the following content, you can choose any
 
-# 添加之后更新源
 sudo apt update
 ```
 
 ```bash
-# 阿里云
+# Aliyun
 deb https://mirrors.aliyun.com/debian/ bookworm main non-free non-free-firmware contrib
 deb-src https://mirrors.aliyun.com/debian/ bookworm main non-free non-free-firmware contrib
 deb https://mirrors.aliyun.com/debian-security/ bookworm-security main
@@ -105,7 +104,7 @@ deb-src https://mirrors.aliyun.com/debian/ bookworm-backports main non-free non-
 ```
 
 ```bash
-# 中科大
+# USTC
 deb https://mirrors.ustc.edu.cn/debian/ bookworm main non-free non-free-firmware contrib
 deb-src https://mirrors.ustc.edu.cn/debian/ bookworm main non-free non-free-firmware contrib
 deb https://mirrors.ustc.edu.cn/debian-security/ bookworm-security main
@@ -117,7 +116,7 @@ deb-src https://mirrors.ustc.edu.cn/debian/ bookworm-backports main non-free non
 ```
 
 ```bash
-# 网易
+# Netease
 deb https://mirrors.163.com/debian/ bookworm main non-free non-free-firmware contrib
 deb-src https://mirrors.163.com/debian/ bookworm main non-free non-free-firmware contrib
 deb https://mirrors.163.com/debian-security/ bookworm-security main
@@ -129,7 +128,7 @@ deb-src https://mirrors.163.com/debian/ bookworm-backports main non-free non-fre
 ```
 
 ```bash
-# 腾讯云
+# Tencent
 deb https://mirrors.cloud.tencent.com/debian/ bookworm main non-free non-free-firmware contrib
 deb-src https://mirrors.cloud.tencent.com/debian/ bookworm main non-free non-free-firmware contrib
 deb https://mirrors.cloud.tencent.com/debian-security/ bookworm-security main
@@ -142,42 +141,42 @@ deb-src https://mirrors.cloud.tencent.com/debian/ bookworm-backports main non-fr
 
 ## python-pip
 
-自带 python3.11，但是没有 pip
+Default with python3.11, But don't have pip tool
 
 ```bash
 sudo apt install python3-pip
 ```
 
-## 远程桌面连接
+## Remote Desktop Access
 
 ```bash
-# 安装XRDP
+# Install XRDP
 sudo apt update
 sudo apt install xrdp
 
-# 启动并启用XRDP服务，并检查启动状态
+# Launch XRDP service and check status
 sudo systemctl enable --now xrdp
 systemctl status xrdp --no-pager -l
 
-# 将XRDP用户添加到SSL-Cert组
-# 需要将XRDP用户添加到SSL-cert组才能正确访问它，
-# 否则在建立远程桌面连接后它将仅显示空白屏幕
+# Add XRDP user to SSL-Cert Group
+# Need to add XRDP user to SSL-cert group that can connect successful
+# or Will show blank screen When after establish the connection
 sudo adduser xrdp ssl-cert
 
-# 重新启动XRDP服务器
+# reboot XRDP service
 sudo systemctl restart xrdp
 
-# 在防火墙中允许端口
+# Pass port in Firewall
 sudo ufw allow 3389
 
-# 建议创建一个新用户用来远程登录
+# Recommand: create new user for remote desktop login
 ```
 
 ```bash
 sudo apt install krdc freerdp2-wayland
 ```
 
-## 修改主机名
+## Change Hostname
 
 ```bash
 sudo vim /etc/hostname
@@ -187,16 +186,12 @@ sudo vim /etc/hosts
 ## Uninstall LibreOffice
 
 ```bash
-#不要漏掉通配符“?”，否则无法清除/卸载全部 LibreOffice 软件包
+# don't lose "*" and "?", or can't clear All LibreOffice
 sudo apt-get purge libreoffice?
-
-#不要漏掉通配符“?”，否则无法清除/卸载全部 LibreOffice 软件包
 sudo aptitude purge libreoffice?
-
-#不要漏掉通配符“*”，否则无法清除/卸载全部 LibreOffice 软件包
 sudo apt-get remove --purge libreoffice*
 
-# clear the remain package
+# clear the unused package
 sudo apt-get clean
 sudo apt-get autoremove
 ```
@@ -246,22 +241,22 @@ alias dif='docker images --format "\nRepository: {{.Repository}}\nTag: {{.Tag}}\
 alias dpsal='docker ps -a --format "\nContainer ID: {{.ID}}\nImage: {{.Image}}\nCommand: {{.Command}}\nCreated: {{.CreatedAt}}\nStatus: {{.Status}}\nPorts: {{.Ports}}\nContainer Name: {{.Names}}\n"'
 alias dpsl='docker ps --format "\nContainer ID: {{.ID}}\nImage: {{.Image}}\nCommand: {{.Command}}\nCreated: {{.CreatedAt}}\nStatus: {{.Status}}\nPorts: {{.Ports}}\nContainer Name: {{.Names}}\n"'
 
-# **************** 下面的配置未经验证，谨慎设置 ***************
+# **************** Below config can't Verified, Be Careful ***************
 # set the terminal colorful
 export CLICOLOR=1
 export LSCOLORS=Gxfxcxdxcxegedabagacad
 export PS1="%n@%10F%m%f:%11F%0~%f \$ "
 
-# 开启自定义颜色
+# custom color
 autoload -U colors && colors
 
-# 显示Git分支
+# Show Git Branch
 function parse_git_branch() {
     git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/[\1]/p'
 }
 setopt PROMPT_SUBST
 
-# 配置提示符颜色
+# Config Prompt Color
 #export PROMPT='%F{green}%n@%m:%F{cyan}%~%F{green}$(parse_git_branch)%F{white}$ '
 export PROMPT='%F{green}%n@%m:%F{cyan}%~%F{green}$(parse_git_branch)%F{white}
 $ '
@@ -274,14 +269,15 @@ $ '
 ```
 
 ```bash
-# 如果出现上面的报错，使用这个命令，选择en_US.UTF-8重新生成语言包就好了
+# if face the above error, use the below command,
+# choose en_US.UTF-8 to regenerate language package
 sudo dpkg-reconfigure locales
 ```
 
-## 升级小版本
+## Upgrade OS Version
 
-升级小版本：从 12.10 升级到 12.11
-升级大版本：从 11 升级到 12
+Upgrade Minor Version: From 12.10 to 12.11
+Upgrade Major Version: From 11 to 12
 
 ```bash
 sudo apt update
@@ -291,14 +287,14 @@ sudo apt autoremove
 sudo apt clean
 sudo reboot
 
-# 查看当前大版本和小版本
+# Check Major and Minor Version
 cat /etc/debian_version
 lsb_release -a
 ```
 
-# 安装软件
+# Software
 
-## 蒲公英
+## PgyVisitor
 
 ```bash
 # download
@@ -340,61 +336,60 @@ sudo tailscale up
 ## Docker
 
 ```bash
-# 更新系统包和安装必要工具
+# update system package and install necessary tools
 sudo apt update
 sudo apt upgrade -y
 sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
 
-# 添加 Docker 官方 GPG 密钥（从阿里云下载）
+# Add Docker Official GPG Key (Download from Aliyun)
 sudo curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-# 添加阿里云的 Docker 软件源
+# Add Aliyun Docker Software Source
 # echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://mirrors.aliyun.com/docker-ce/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://mirrors.aliyun.com/docker-ce/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
 
-# 更新 apt 软件包索引
 sudo apt update
 
-# 安装 Docker
+# install Docker
 sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
-# 启动并设置 Docker 开机自启
+# launch and config Docker start at boot
 sudo systemctl start docker
 sudo systemctl enable docker
 
-# 验证 Docker 是否安装成功
+# Verify Docker install is success
 docker --version
 
-# 添加当前用户到 Docker 组（可选）
+# Add current user to Docker Group (Optional)
 sudo usermod -aG docker $USER
-# 然后退出当前会话并重新登录
+# and then logout current user and relogin
 
- # 验证 Docker 服务
+# Verify Docker Service
 sudo systemctl status docker
 ```
 
 ```bash
-# 卸载 Docker 包和相关依赖
+# Uninstall Docker Package and Dependencies
 sudo apt purge docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
-# 删除 Docker 配置文件和数据目录
-## 删除 Docker 配置和数据目录
+# Delete Docker Configure file and data directory
+## delete Docker config and data dir
 sudo rm -rf /var/lib/docker
 sudo rm -rf /etc/docker
-## 删除 Docker 配置文件
+## delete Docker configure file
 sudo rm -rf /etc/systemd/system/docker.service.d
 sudo rm -rf /etc/apt/sources.list.d/docker.list
-## 删除 Docker 配置的 GPG 密钥
+## delete Docker GPG key
 sudo rm -f /usr/share/keyrings/docker-archive-keyring.gpg
 
-# 清理无用的依赖
+# clear unused dependency
 sudo apt autoremove --purge
 sudo apt clean
 
-# 更新 apt 软件源
+# Update apt source
 sudo apt-get update
 
-# 确认 Docker 是否完全卸载
+# ensure uninstall Docker competely
 docker --version
 ```
 
@@ -457,31 +452,11 @@ tmux source-file ~/.tmux.conf
 ## fcitx5
 
 ```bash
-sudo apt install \
-fcitx5 \
-fcitx5-frontend-qt5 \
-fcitx5-frontend-gtk2 \
-fcitx5-frontend-gtk3 \
-fcitx5-pinyin \
-fcitx5-chinese-addons \
-fcitx5-chewing \
-fcitx5-module-lua \
-fcitx5-module-lua-common \
-fcitx5-modules \
-unicode-cldr-core
+# Uninstall old input method
+sudo apt purge fcitx* ibus*
 
-# /etc/environment
-sudo sh -c 'cat << EOF >> /etc/environment
-XIM=fcitx5
-XIM_PROGRAM=fcitx5
-GTK_IM_MODULE=fcitx5
-QT_IM_MODULE=fcitx5
-XMODIFIERS=@im=fcitx5
-SDL_IM_MODULE=fcitx5
-GLFW_IM_MODULE=fcitx5
-EOF'
+# Install
+sudo apt install fcitx5 fcitx5-chinese-addons fcitx5-pinyin
 
-sudo bash -c 'source /etc/environment'
-
-reboot
+sudo reboot
 ```
