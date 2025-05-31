@@ -49,31 +49,41 @@ https://zhuanlan.zhihu.com/p/493050003
 
 # 2.get vscode-server-linux-x64.tar.gz
 https://update.code.visualstudio.com/commit:COMMIT_ID/server-linux-x64/stable
+https://update.code.visualstudio.com/commit:COMMIT_ID/server-linux-arm64/stable
 
 # 3.Upload vscode-server-linux-x64.tar.gz to server or container
 
 # 4.deploy vscode-server to server or container
 mkdir -p ~/.vscode-server/bin
-mv path/vscode-server-linux-x64.tar.gz ~/.vscode-server/bin
-cd ~/.vscode-server/bin
-tar -zxvf vscode-server-linux-x64.tar.gz
-mv vscode-server-linux-x64 COMMIT_ID
-rm vscode-server-linux-x64.tar.gz
-cd ~/.vscode-server/bin/COMMIT_ID
-touch 0
+tar -zxvf ./vscode-server-linux-x64.tar.gz
+mv ./vscode-server-linux-x64 ~/.vscode-server/bin/COMMIT_ID
+touch ~/.vscode-server/bin/COMMIT_ID/0
 ```
 
 ```bash
+# bash.sh
 commit_id="xxx"
-vspath="xxx"
 vsname="~/.vscode-server/bin"
+vsl="vscode-server-linux-x64"
 
 mkdir -p ${vsname}
-mv ${vspath}/vscode-server-linux-x64.tar.gz ${vsname}
-tar -zxvf ${vsname}/vscode-server-linux-x64.tar.gz
-mv ${vsname}/vscode-server-linux-x64 ${vsname}/${commit_id}
-rm ${vsname}/vscode-server-linux-x64.tar.gz
+tar -zxvf ./${vsl}.tar.gz
+mv ./${vsl} ${vsname}/${commit_id}
 touch ${vsname}/${commit_id}/0
+```
+
+```yaml
+# docker-compose.yml
+services:
+  djangodev:
+    image: registry.cn-shenzhen.aliyuncs.com/haroldfinch/python:3.10.16-slim-bookworm
+    container_name: djangodev
+    volumes:
+      - ./:/home/work
+    ports:
+      - 8000:8000
+    command: ["tail", "-f", "/dev/null"]
+    restart: always
 ```
 
 # Python 虚拟环境配置
