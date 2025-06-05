@@ -20,7 +20,7 @@
         <td></td>
     </tr>
     <tr>
-        <td colspan="3" style="text-align: center;">Docker</td>
+        <td colspan="3" style="color: red;"><B>Docker</B></td>
     </tr>
     <tr>
         <td><a href="./docker/pipeline.md">Docker Pipeline</a></td>
@@ -28,7 +28,7 @@
         <td><a href="./docker/aliyun.md">阿里云镜像仓库</a></td>
     </tr>
     <tr>
-        <td colspan="3" style="text-align: center;">Linux</td>
+        <td colspan="3" style="color: red;"><B>Linux</B></td>
     </tr>
     <tr>
         <td><a href="./linux/pve.md">PVE</a></td>
