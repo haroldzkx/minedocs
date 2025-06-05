@@ -1,5 +1,32 @@
 # 【Docker 常用命令】
 
+# 国内镜像源
+
+1. DaoCloud
+
+https://docs.daocloud.io/community/mirror.html
+
+```bash
+# 使用方法
+# 1.增加前缀（推荐）:
+k8s.gcr.io/coredns/coredns => m.daocloud.io/k8s.gcr.io/coredns/coredns
+
+# 2.修改镜像仓库的前缀
+k8s.acr.io/coredns/coredns => k8s-gcr.m.daocloud.io/coredns/coredns
+
+docker pull m.daocloud.io/docker.io/library/node:17.5.0-stretch-slim
+```
+
+2. Aliyun（自建的）
+
+```bash
+registry.cn-shenzhen.aliyuncs.com/haroldfinch
+```
+
+```bash
+docker pull registry.cn-shenzhen.aliyuncs.com/haroldfinch/[image]:[镜像版本号]
+```
+
 # 容器
 
 ## 后台启动容器并进入容器
@@ -346,22 +373,6 @@ sudo apt-get update
 # 确认 Docker 是否完全卸载
 docker --version
 ```
-
-# 理论体系
-
-![](./images/guide.1.jpg)
-
-- Docker Client: 用户提交 Docker 命令。
-- Dockerd: 负责 REST API、处理镜像相关命令、网络、容器编排等。
-- Containerd: 负责容器生命周期管理（负责处理容器相关的命令），但不负责创建容器。当 docker run 命令到来时会 fork 出 Runc 与 Shim 两个进程。
-- Runc: 负责创建容器进程，容器创建并启动完毕后，Runc 将容器进程交付给 Shim 进程管理，然后自己退出。
-- Shim: 负责将容器与 Docker Daemon 进行解耦。
-
-![](./images/guide.2.png)
-
-![](./images/guide.3.png)
-
-![](./images/guide.4.png)
 
 # 实用工具
 

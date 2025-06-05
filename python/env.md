@@ -1,5 +1,7 @@
 > 优先选择使用 Docker 构建 Python 环境，一个项目一个 Docker 容器，不能使用 Docker 再考虑 miniconda
 
+Python 多版本共存教程：https://zhuanlan.zhihu.com/p/509506199
+
 # 本地 Docker + VSCode
 
 ```yaml

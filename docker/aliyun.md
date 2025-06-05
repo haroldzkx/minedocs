@@ -11,19 +11,9 @@
 
 # GitHub 仓库构建镜像
 
-1. 容器镜像服务中使用“个人实例”
-
-[https://cr.console.aliyun.com/cn-shenzhen/instances](https://cr.console.aliyun.com/cn-shenzhen/instances)
-
-![](./images/aliyun.1.png)
-
-2. 创建命名空间
-
-![](./images/aliyun.2.png)
-
-3. 创建镜像仓库
-
-![](./images/aliyun.3.png)
+1. 容器镜像服务中使用“个人实例” [https://cr.console.aliyun.com/cn-shenzhen/instances](https://cr.console.aliyun.com/cn-shenzhen/instances)
+2. 在个人实例中创建命名空间
+3. 在个人实例中创建镜像仓库
 
 ![](./images/aliyun.4.png)
 
