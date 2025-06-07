@@ -89,6 +89,27 @@ docker cp [容器名]:[容器中的文件/目录路径] [宿主机目录]
 docker cp [容器名]:/app/my-app ./
 ```
 
+# docker-compose.yml
+
+```yaml
+services:
+  cpp-dev:
+    image: gcc:13
+    container_name: cpp-dev
+    volumes:
+      - ./src:/app
+    working_dir: /app
+    command: ["tail", "-f", "/dev/null"]
+```
+
+working_dir：让你一进入容器或运行命令时就处于代码目录下（而不是 / 或其他系统路径）。
+
+- 指定容器内的“工作目录”。
+
+- 进入容器时，默认所在的目录。
+
+- command 和 entrypoint 的执行目录。
+
 # 镜像
 
 ## Dockerfile

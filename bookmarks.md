@@ -1,6 +1,20 @@
 # 【Bookmarks】
 
+```bash
+1 亿 = 100,000,000
+     = 10,000 * 10,000（1 万个 1 万）
+     = 100,000 * 1,000（10 万个 1 千）
+
+1 天 1 万，27 年 145 天
+1 年 1000 万，10 年
+1 年 625 万，16 年
+1 年 500 万，20 年
+1 年 400 万，25 年
+```
+
 30T 精选资源: [https://www.aliyundrive.com/s/FERKFwRNjKt/folder/63b2595cef44bad3984842d5b4622a4258c9089b](https://www.aliyundrive.com/s/FERKFwRNjKt/folder/63b2595cef44bad3984842d5b4622a4258c9089b)
+
+闲鱼违禁词检测：[https://uutool.cn/check-word/](https://uutool.cn/check-word/)
 
 Markdown 中的 Mermaid 画图:
 
