@@ -37,6 +37,9 @@ python manage.py startapp APP_NAME
 
 ## 纯净版 Django
 
+<details>
+<summary>代码</summary>
+
 ```python
 # settings.py
 ......
@@ -76,6 +79,8 @@ TEMPLATES = [
 ]
 ......
 ```
+
+</details>
 
 # Django 配置
 

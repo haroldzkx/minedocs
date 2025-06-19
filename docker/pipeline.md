@@ -1,6 +1,7 @@
 # Node.js
 
-## docker-compose.yml
+<details>
+<summary>docker-compose.yml</summary>
 
 ```yaml
 services:
@@ -9,6 +10,7 @@ services:
     container_name: vuemovie
     volumes:
       - ./:/home/work
+    working_dir: /home/work
     ports:
       - 3000:3000
       - 5173:5173
@@ -16,7 +18,10 @@ services:
     command: ["tail", "-f", "/dev/null"]
 ```
 
-## bash.sh
+</details>
+
+<details>
+<summary>bash.sh</summary>
 
 ```bash
 docker compose up -d
@@ -48,9 +53,12 @@ docker exec -it vuemovie cat /home/work/mock.log
 docker exec -it vuemovie tail -f /home/work/mock.log
 ```
 
+</details>
+
 # Python
 
-## docker-compose.yml
+<details>
+<summary>docker-compose.yml</summary>
 
 ```yaml
 services:
@@ -59,12 +67,16 @@ services:
     container_name: XXX
     volumes:
       - ./XXX:/home/work
+    working_dir: /home/work
     ports:
       - 8080:8080
     command: ["tail", "-f", "/dev/null"]
 ```
 
-## bash.sh
+</details>
+
+<details>
+<summary>bash.sh</summary>
 
 ```bash
 docker compose up -d
@@ -83,11 +95,15 @@ pip install -r requirements.txt
 pip install XXX
 ```
 
+</details>
+
 # Django
 
-## docker-compose.yml
+<details>
+<summary>【temp】docker-compose.yml</summary>
 
 ```yaml
+### docker-compose.yml
 services:
   djangodev:
     image: registry.cn-shenzhen.aliyuncs.com/haroldfinch/python:3.10.16-slim-bookworm
@@ -98,9 +114,55 @@ services:
       - 8000:8000
     command: ["tail", "-f", "/dev/null"]
     restart: always
+    # 这里不完整，还应该有mysql数据库的配置
+    # **下面的配置还未验证**
+    depends_on:
+      - db_mysql
+    environment:
+      - DATABASE_URL=mysql://dev_user:dev_pass@db_mysql:3306/dev_db
+    networks:
+      - django-PROJECT_NAME-network
+
+db_mysql:
+image: registry.cn-shenzhen.aliyuncs.com/haroldfinch/mysql:8.0.40
+container_name: djangodev-mysql
+environment:
+MYSQL_ROOT_PASSWORD: xxx
+MYSQL_DATABASE: xxx
+MYSQL_USER: xxx
+MYSQL_PASSWORD: xxx
+ports: - 3306:3306
+volumes: - ./mysql/log:/var/log/mysql - ./mysql/data:/var/lib/mysql - ./mysql/conf.d:/etc/mysql/conf.d
+networks: - django-PROJECT_NAME-network
+
+networks:
+django-PROJECT_NAME-network:
+driver: bridge
 ```
 
-## bash.sh
+</details>
+
+<details>
+<summary>docker-compose.yml</summary>
+
+```yaml
+services:
+  djangodev:
+    image: registry.cn-shenzhen.aliyuncs.com/haroldfinch/python:3.10.16-slim-bookworm
+    container_name: djangodev
+    volumes:
+      - ./:/home/work
+    working_dir: /home/work
+    ports:
+      - 8000:8000
+    command: ["tail", "-f", "/dev/null"]
+    restart: always
+```
+
+</details>
+
+<details>
+<summary>bash.sh</summary>
 
 ```bash
 ### bash.sh
@@ -138,9 +200,12 @@ docker exec -it djangodev cat /home/work/mock.log
 docker exec -it djangodev tail -f /home/work/mock.log
 ```
 
+</details>
+
 # C++
 
-## docker-compose.yml
+<details>
+<summary>docker-compose.yml</summary>
 
 ```yaml
 services:
@@ -153,7 +218,10 @@ services:
     command: ["tail", "-f", "/dev/null"]
 ```
 
-## bash.sh
+</details>
+
+<details>
+<summary>bash.sh</summary>
 
 ```bash
 docker compose up -d
@@ -168,7 +236,10 @@ g++ main.cpp -o main
 apt update && apt install -y cmake gdb
 ```
 
-## check_denpendencies.sh
+</details>
+
+<details>
+<summary>check_denpendencies.sh</summary>
 
 ```bash
 for tool in gcc g++ make bash cmake gdb clang git; do
@@ -180,7 +251,10 @@ for tool in gcc g++ make bash cmake gdb clang git; do
 done
 ```
 
-## build.sh
+</details>
+
+<details>
+<summary>build.sh</summary>
 
 ```bash
 #!/bin/bash
@@ -203,3 +277,5 @@ echo " - Build successful. Running program:"
 echo "-------------------------------------"
 ./main
 ```
+
+</details>
