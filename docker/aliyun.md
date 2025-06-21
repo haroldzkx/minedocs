@@ -127,6 +127,17 @@ docker pull $ali/ubuntu:18.04-arm
 - bookworm, bookworm-backports, bookworm-slim,
 - bullseye, bullseye-backports, bullseye-slim
 
+【RockyLinux】
+
+- 9.3, 9.3-minimal
+- 8.9, 8.9-minimal
+
+【OracleLinux】
+
+- 9, 9-slim-fips, 9-slim
+- 8.10, 8-slim-fips, 8-slim
+- 7.9, 7-slim-fips, 7-slim
+
 【centos】5, 6, 7, 8
 
 【ubi (RHEL)】
@@ -142,11 +153,11 @@ docker pull $ali/ubuntu:18.04-arm
 
 【python】
 
-- 3.13.1-bookworm, 3.13.1-slim-bookworm, 3.13.1-bullseye, 3.13.1-slim-bullseye, 3.13.1-alpine3.20, 3.13.1-alpine3.19
-- 3.12.8-bookworm, 3.12.8-slim-bookworm, 3.12.8-bullseye, 3.12.8-slim-bullseye, 3.12.8-alpine3.20, 3.12.8-alpine3.19
-- 3.11.11-bookworm, 3.11.11-slim-bookworm, 3.11.11-bullseye, 3.11.11-slim-bullseye, 3.11.11-alpine3.20, 3.11.11-alpine3.19
-- 3.10.16-bookworm, 3.10.16-slim-bookworm, 3.10.16-bullseye, 3.10.16-slim-bullseye, 3.10.16-alpine3.20, 3.10.16-alpine3.19
-- 3.9.21-bookworm, 3.9.21-slim-bookworm, 3.9.21-bullseye, 3.9.21-slim-bullseye, 3.9.21-alpine3.20, 3.9.21-alpine3.19
+- 3.13.5-bookworm, 3.13.5-slim-bookworm, 3.13.5-bullseye, 3.13.5-slim-bullseye, 3.13.5-alpine3.22, 3.13.5-alpine3.21
+- 3.12.11-bookworm, 3.12.11-slim-bookworm, 3.12.11-bullseye, 3.12.11-slim-bullseye, 3.12.11-alpine3.22, 3.12.11-alpine3.21
+- 3.11.13-bookworm, 3.11.13-slim-bookworm, 3.11.13-bullseye, 3.11.13-slim-bullseye, 3.11.13-alpine3.22, 3.11.13-alpine3.21
+- 3.10.18-bookworm, 3.10.18-slim-bookworm, 3.10.18-bullseye, 3.10.18-slim-bullseye, 3.10.18-alpine3.22, 3.10.18-alpine3.21
+- 3.9.23-bookworm, 3.9.23-slim-bookworm, 3.9.23-bullseye, 3.9.23-slim-bullseye, 3.9.23-alpine3.22, 3.9.23-alpine3.21
 - 3.8.20-bookworm, 3.8.20-slim-bookworm, 3.8.20-bullseye, 3.8.20-slim-bullseye, 3.8.20-alpine3.20, 3.8.20-alpine3.19
 
 【jupyter】
@@ -165,7 +176,9 @@ docker pull $ali/ubuntu:18.04-arm
 【node】
 
 - 23.3.0-bullseye-slim, 23.3.0-bullseye, 23.3.0-bookworm-slim, 23.3.0-bookworm, 23.3.0-alpine3.20, 23.3.0-alpine3.19
+- 22.16.0-bullseye-slim, 22.16.0-bullseye, 22.16.0-bookworm-slim, 22.16.0-bookworm, 22.16.0-alpine3.22, 22.16.0-alpine3.21
 - 22.12.0-bullseye-slim, 22.12.0-bullseye, 22.12.0-bookworm-slim, 22.12.0-bookworm, 22.12.0-alpine3.20, 22.12.0-alpine3.19
+- 20.19.2-bullseye-slim, 20.19.2-bullseye, 20.19.2-bookworm-slim, 20.19.2-bookworm, 20.19.2-alpine3.22, 20.19.2-alpine3.21
 - 20.18.1-bullseye-slim, 20.18.1-bullseye, 20.18.1-bookworm-slim, 20.18.1-bookworm, 20.18.1-alpine3.20, 20.18.1-alpine3.19
 - 18.20.5-bullseye-slim, 18.20.5-bullseye, 18.20.5-bookworm-slim, 18.20.5-bookworm, 18.20.5-alpine3.20, 18.20.5-alpine3.19
 
@@ -199,9 +212,9 @@ docker pull $ali/ubuntu:18.04-arm
 
 【mysql】
 
-- 9.1.0
-- 8.4.3
-- 8.0.40, 8.0.40-bookworm
+- 9.3.0, 9.1.0
+- 8.4.5, 8.4.3
+- 8.0.42, 8.0.42-bookworm, 8.0.40, 8.0.40-bookworm
 - 5.5.62, 5.7.44
 
 【mariadb】
