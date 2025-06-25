@@ -182,9 +182,9 @@ Django 内置信号: [https://docs.djangoproject.com/zh-hans/5.2/ref/signals/](h
 
 # ASGI 服务器
 
-wsgi 协议服务器：uwsgi
+wsgi 协议服务器：uwsgi【同步，通过多进程+多线程的方式来实现并发】
 
-asgi 协议服务器：
+asgi 协议服务器：【异步，通过多进程+主线程(不存在多线程)+协程的方式来实现并发】
 
 - Daphne（Django 官方，开发环境使用）[https://docs.djangoproject.com/zh-hans/5.1/howto/deployment/asgi/daphne/](https://docs.djangoproject.com/zh-hans/5.1/howto/deployment/asgi/daphne/)
 - Uvicorn（基于 uvloop，生产环境使用）[https://docs.djangoproject.com/zh-hans/5.1/howto/deployment/asgi/uvicorn/](https://docs.djangoproject.com/zh-hans/5.1/howto/deployment/asgi/uvicorn/)

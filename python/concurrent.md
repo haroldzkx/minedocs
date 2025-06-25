@@ -64,7 +64,7 @@ Asyncio: [https://docs.python.org/zh-cn/3.13/library/asyncio.html](https://docs.
 
 协程与任务: [https://docs.python.org/zh-cn/3.13/library/asyncio-task.html](https://docs.python.org/zh-cn/3.13/library/asyncio-task.html)
 
-可等待对象: 协程, 任务和 Future。
+可等待对象: 协程, 任务和 Future。【也就是可以加await关键字的对象】
 
 - [https://docs.python.org/zh-cn/3.13/library/asyncio-task.html#awaitables](https://docs.python.org/zh-cn/3.13/library/asyncio-task.html#awaitables)
 - [https://docs.python.org/zh-cn/3.13/reference/datamodel.html#awaitable-objects](https://docs.python.org/zh-cn/3.13/reference/datamodel.html#awaitable-objects)
