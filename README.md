@@ -1,136 +1,106 @@
-<table>
-    <caption>Others</caption>
-    <tr>
-        <td><a href="./bookmarks.md">Bookmarks</a></td>
-    </tr>
-</table>
+[Bookmarks](./bookmarks.md)
 
-<table>
-    <caption>CS.Architecture</caption>
-    <tr>
-        <td rowspan="3"><B>Python</B></td>
-        <td><a href="./python/env.md">环境配置</a></td>
-        <td><a href="./python/jupyter.md">Jupyter</a></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><a href="./python/concurrent.md">多线程/多进程/协程</a></td>
-        <td><a href="./python/mkdocs.md">mkdocs搭建博客网站</a></td>
-        <td><a href="./python/pytorch.md">PyTorch</a></td>
-    </tr>
-    <tr>
-        <td><a href="./python/logging.md">logging</a></td>
-        <td><a href="./python/loguru.md">loguru</a></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td colspan="4"></td>
-    </tr>
-    <tr>
-        <td rowspan="1"><B>Docker</B></td>
-        <td><a href="./docker/pipeline.md">Docker Pipeline</a></td>
-        <td><a href="./docker/guide.md">常用命令</a></td>
-        <td><a href="./docker/aliyun.md">阿里云镜像仓库</a></td>
-    </tr>
-    <tr>
-        <td colspan="4"></td>
-    </tr>
-    <tr>
-        <td rowspan="4"><B>Linux</B></td>
-        <td><a href="./linux/pve.md">PVE</a></td>
-        <td><a href="./linux/qemu.kvm.md">Qemu/KVM</a></td>
-        <td><a href="./linux/virtualbox.md">VirtualBox</a></td>
-    </tr>
-    <tr>
-        <td><a href="./linux/debian.12.md">Debian 12</a></td>
-        <td><a href="./linux/ubuntu.server.22.04.md">Ubuntu Server 22.04</a></td>
-        <td><a href="./linux/rocky.md">Rocky Linux</a></td>
-    </tr>
-    <tr>
-        <td><a href="./linux/tmux.md">Tmux</a></td>
-        <td><a href="./linux/vim.md">Vim</a></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><a href="./linux/command.md">常用命令</a></td>
-        <td><a href="./linux/disk.dir.md">磁盘分区</a></td>
-        <td><a href="./linux/tar.zip.md">打包与压缩</a></td>
-    </tr>
-    <tr>
-        <td colspan="4"></td>
-    </tr>
-    <tr>
-        <td rowspan="2"><B>Git</B></td>
-        <td><a href="./git/command.md">常用命令</a></td>
-        <td><a href="./git/config.md">配置</a></td>
-        <td><a href="./git/commit.md">提交规范</a></td>
-    </tr>
-    <tr>
-        <td><a href="./git/workflow.md">Git WorkFlow</a></td>
-        <td><a href="./git/version.md">版本控制规范</a></td>
-        <td><a href="./git/github.nice.md">GitHub Nice Project</a></td>
-    </tr>
-    <tr>
-        <td colspan="4"></td>
-    </tr>
-    <tr>
-        <td><a href="./python/pointer.dv.md">数据可视化</a></td>
-        <td><a href="./latex/pointer.md">LaTeX</a></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><a href="./designpattern/pointer.md">设计模式</a></td>
-        <td><a href="./datastructure/pointer.md">数据结构</a></td>
-        <td><a href="./database/mysql.md">MySQL</a></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><a href="./cpp/pointer.md">C++</a></td>
-        <td><a href="./php/pointer.md">PHP</a></td>
-        <td><a href="./react/pointer.md">React</a></td>
-        <td></td>
-    </tr>
-</table>
+# Program Language
 
-<table>
-    <caption>CS.Web</caption>
-    <tr>
-        <td rowspan="2"><B>Django</B></td>
-        <td><a href="./django/dirarch.md">目录结构</a></td>
-        <td><a href="./django/quickstart.md">QuickStart</a></td>
-        <td><a href="./django/i18n.md">国际化</a></td>
-    </tr>
-    <tr>
-        <td><a href="./django/drf.md">DRF</a></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td colspan="4"></td>
-    </tr>
-    <tr>
-        <td><a href="./fastapi/fastapi.md">FastAPI</a></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><a href="./web/backend.md">Backend</a></td>
-        <td><a href="./web/proxy.md">正向代理与反向代理</a></td>
-        <td><a href="./web/curl.md">curl</a></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><a href="./web/jwt.md">JWT</a></td>
-        <td><a href="./web/oauth.md">OAuth</a></td>
-        <td><a href="./web/rbac.md">RBAC</a></td>
-        <td><a href="./web/grpc.md">gRPC</a></td>
-    </tr>
-    <tr>
-        <td><a href="./web/npm.md">NPM</a></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-</table>
+## Python
+
+[环境配置](./pl/python/env.md)
+
+[Jupyter](./pl/python/jupyter.md)
+
+[多线程/多进程/协程](./pl/python/concurrent.md)
+
+[mkdocs搭建博客网站](./pl/python/mkdocs.md)
+
+[PyTorch](./pl/python/pytorch.md)
+
+[loguru](./pl/python/loguru.md)
+
+# Tools
+
+## Docker
+
+[Docker常用解决方案](./tools/docker/pipeline.md)
+
+[Docker常用命令](./tools/docker/guide.md)
+
+[阿里云镜像仓库](./tools/docker/aliyun.md)
+
+[个人镜像仓库](./tools/docker/image.md)
+
+## Linux
+
+[PVE 配置教程](./tools/linux/pve.md)
+
+[Qemu / KVM](./tools/linux/qemu.kvm.md)
+
+[Debian 12 配置教程](./tools/linux/debian.12.md)
+
+[Ubuntu Server 22.04 配置教程](./tools/linux/ubuntu.server.22.04.md)
+
+[Rocky Linux 配置教程](./tools/linux/rocky.md)
+
+[Tmux](./tools/linux/tmux.md)
+
+[Vim](./tools/linux/vim.md)
+
+[Linux 常用命令](./tools/linux/command.md)
+
+[磁盘分区](./tools/linux/disk.dir.md)
+
+[打包与压缩](./tools/linux/tar.zip.md)
+
+## Git
+
+[Git 常用命令](./tools/git/command.md)
+
+[Git 配置](./tools/git/config.md)
+
+[Git 提交规范](./tools/git/commit.md)
+
+[Git 工作流](./tools/git/workflow.md)
+
+[版本控制规范](./tools/git/version.md)
+
+[GitHub Nice Project](./tools/git/github.nice.md)
+
+# Web
+
+## Theory
+
+[gRPC](./web/grpc.md)
+
+[JWT](./web/jwt.md)
+
+[正向代理与反向代理](./web/proxy.md)
+
+## Project Practice
+
+
+# Others
+
+[Django 项目目录结构](./web/django/dirarch.md)
+
+[Django 常用命令](./web/django/quickstart.md)
+
+[Django 国际化](./web/django/i18n.md)
+
+[DRF](./web/django/drf.md)
+
+[微服务概述](./web/microservices.md)
+
+[Backend](./web/backend.md)
+
+[雪花算法](./web/snowflake.md)
+
+[服务注册与发现](./web/servicerd.md)
+
+[cURL](./web/curl.md)
+
+[OAuth](./web/oauth.md)
+
+[RBAC](./web/rbac.md)
+
+[npm](./web/npm.md)
+
+[支付宝支付接口](./web/alipay.md)
