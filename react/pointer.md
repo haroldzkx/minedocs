@@ -96,7 +96,8 @@ React Router 官方文档: [https://reactrouter.com/home](https://reactrouter.co
 
 发送请求:
 
-- axios:
+<details>
+<summary>1.axios</summary>
 
 ```jsx
 // 自定义Hook封装数据请求逻辑
@@ -123,6 +124,8 @@ function useGetList() {
 // 调用自定义数据请求Hook
 const { commentList, setCommentList } = useGetList();
 ```
+
+</details>
 
 # 项目目录结构
 
