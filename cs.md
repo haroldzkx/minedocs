@@ -3,6 +3,16 @@
 左耳听风: [Gitee](https://gitee.com/haroldzkx/rleftearlistenwind) [GitHub](https://github.com/finchzkx/rLeftEarListenWind)
 
 <details>
+<summary>需要精通的工作流/解决方案</summary>
+
+- 前端：React
+- 后端：Python + pybind11 + Cpp
+- 数据库：MySQL
+- 系统：Debian
+
+</details>
+
+<details>
 <summary>理论</summary>
 
 计算机组成原理
