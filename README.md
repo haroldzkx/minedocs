@@ -9,9 +9,9 @@
     <caption>CS.Architecture</caption>
     <tr>
         <td rowspan="3"><B>Python</B></td>
+        <td><a href="./python/base.md">语法基础</a></td>
         <td><a href="./python/env.md">环境配置</a></td>
         <td><a href="./python/jupyter.md">Jupyter</a></td>
-        <td></td>
     </tr>
     <tr>
         <td><a href="./python/concurrent.md">多线程/多进程/协程</a></td>
