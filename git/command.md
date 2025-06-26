@@ -1,5 +1,11 @@
 # 【git 常用命令】
 
+# 注意事项
+
+1. 为了避免有冲突，尽量每次修改前使用git pull origin main这样来先同步一遍
+
+2. 每次都将本地的修改先git commit，然后git push提交，
+
 # 版本 commit
 
 ## 生成版本

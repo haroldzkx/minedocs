@@ -12,10 +12,11 @@
 1 年 400 万，25 年
 ```
 
-# AI Assisant
+# AI GPTs
 
-- C++: [https://chatgpt.com/g/g-qmHgSbmzJ-c-cpp](https://chatgpt.com/g/g-qmHgSbmzJ-c-cpp)
-- Python: [https://chatgpt.com/g/g-tNwCg2vYv-python](https://chatgpt.com/g/g-tNwCg2vYv-python)
+- HTML + CSS + Javascript: [https://chatgpt.com/g/g-JOJBoNrCa-html-css-javascript](https://chatgpt.com/g/g-JOJBoNrCa-html-css-javascript)
+- JavaScript: [https://chatgpt.com/g/g-izfY9J70Q-javascript](https://chatgpt.com/g/g-izfY9J70Q-javascript)
+- React: [https://chatgpt.com/g/g-w2D4rqH0d-react](https://chatgpt.com/g/g-w2D4rqH0d-react)
 
 ---
 
@@ -27,6 +28,14 @@
 
 ---
 
+- MySQL Expert: [https://chatgpt.com/g/g-7lNi0ngBh-mysql-expert](https://chatgpt.com/g/g-7lNi0ngBh-mysql-expert)
+- Redis Expert: [https://chatgpt.com/g/g-jesynRMQW-redis-expert](https://chatgpt.com/g/g-jesynRMQW-redis-expert)
+
+##################################################################
+
+- C++: [https://chatgpt.com/g/g-qmHgSbmzJ-c-cpp](https://chatgpt.com/g/g-qmHgSbmzJ-c-cpp)
+- Python: [https://chatgpt.com/g/g-tNwCg2vYv-python](https://chatgpt.com/g/g-tNwCg2vYv-python)
+
 - Linux Server Expert: [https://chatgpt.com/g/g-Ia0hiDskv-linux-server-expert](https://chatgpt.com/g/g-Ia0hiDskv-linux-server-expert)
 - Docker Expert: [https://chatgpt.com/g/g-WbeCJbcUC-docker-expert](https://chatgpt.com/g/g-WbeCJbcUC-docker-expert)
 
@@ -34,8 +43,11 @@
 
 - Shopify Sidekick: [https://chatgpt.com/g/g-sUFc15XWh-shopify-sidekick](https://chatgpt.com/g/g-sUFc15XWh-shopify-sidekick)
 - Liquid Programming: [https://chatgpt.com/g/g-L1sf1nvxb-liquid-programming](https://chatgpt.com/g/g-L1sf1nvxb-liquid-programming)
+- WordPress Wizard: [https://chatgpt.com/g/g-BahnEMrJ0-wordpress-wizard](https://chatgpt.com/g/g-BahnEMrJ0-wordpress-wizard)
 
 ---
+
+# Tools
 
 <details>
 <summary>AI Tools</summary>
@@ -49,8 +61,6 @@ AIChatOS：[https://chat18.aichatos96.com/](https://chat18.aichatos96.com/)
 验证码识别：[https://www.chaojiying.com](https://www.chaojiying.com)
 
 </details>
-
-# Tools
 
 <details>
 <summary>Temp</summary>
