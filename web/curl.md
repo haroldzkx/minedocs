@@ -2,7 +2,7 @@
 
 ```bash
 curl https://www.baidu.com/
-curl -X -GET https://www.baidu.com/
+curl -X GET https://www.baidu.com/
 
 # 带参数的GET请求
 curl https://api.example.com/users?id=123&name=John
@@ -11,9 +11,9 @@ curl https://api.example.com/users?id=123&name=John
 # POST
 
 ```bash
-curl -X -POST https://www.baidu.com/ -d '{"key": "value"}'
+curl -X POST https://www.baidu.com/ -d '{"key": "value"}'
 curl -XPOST https://www.baidu.com/ -d '{"key": "value"}'
-curl -X -POST https://www.baidu.com/ \
+curl -X POST https://www.baidu.com/ \
     -H 'Content-Type:application/json' \
     -H 'Authorization: Bearer token123' \
     -d '{"key": "value"}'
