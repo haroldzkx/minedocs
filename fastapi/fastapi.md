@@ -2,6 +2,11 @@
 
 安装: [https://fastapi.tiangolo.com/zh/#\_3](https://fastapi.tiangolo.com/zh/#_3)
 
+```bash
+pip install fastapi
+pip install uvicorn[standard]
+```
+
 示例: [https://fastapi.tiangolo.com/zh/#\_4](https://fastapi.tiangolo.com/zh/#_4)
 
 运行: [https://fastapi.tiangolo.com/zh/#\_6](https://fastapi.tiangolo.com/zh/#_6)
@@ -12,7 +17,7 @@ fastapt dev
 fastapi dev main.py
 fastapi dev main.py --port 8081 --host xxxx
 
-# 生产环境（低层也是基于uvicorn）
+# 生产环境（底层也是基于uvicorn）
 fastapi run
 
 uvicorn main:app --reload
@@ -31,7 +36,7 @@ uvicorn main:app --reload --port 8082 --host xxxx
 
 额外数据类型: [https://fastapi.tiangolo.com/zh/tutorial/extra-data-types/](https://fastapi.tiangolo.com/zh/tutorial/extra-data-types/)
 
-# Pydantic
+# Pydantic数据校验
 
 Pydantic 是做数据校验的。
 
@@ -90,6 +95,15 @@ Header 参数
 模式的额外信息: [https://fastapi.tiangolo.com/zh/tutorial/schema-extra-example/](https://fastapi.tiangolo.com/zh/tutorial/schema-extra-example/)
 
 # 依赖注入
+
+依赖注入，可以让我们的视图函数在执行之前，先执行一段逻辑代码，这段逻辑代码可以返回新的值给视图函数。在以下场景中可以使用依赖注入：
+
+- 共享业务逻辑（复用相同的代码逻辑）
+- 共享数据库连接
+- 实现安全、验证、角色权限
+- ...
+
+总之，就是将一些重复性的代码，单独写成依赖，然后在需要的视图函数中，注入这个依赖。
 
 函数作为依赖: [https://fastapi.tiangolo.com/zh/tutorial/dependencies/](https://fastapi.tiangolo.com/zh/tutorial/dependencies/)
 

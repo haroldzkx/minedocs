@@ -26,6 +26,9 @@ pip install cryptography
 
 - 创建会话工厂的参数配置: [https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.sessionmaker](https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.sessionmaker.__init__)
 
+<details>
+<summary>数据库连接模板代码</summary>
+
 ```python
 # models/__init__.py
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -58,6 +61,8 @@ Base = declarative_base()
 from . import user
 ```
 
+</details>
+
 # 创建模型
 
 定义 Base 类并创建 ORM 模型:
@@ -66,9 +71,38 @@ from . import user
 
 - [https://docs.sqlalchemy.org/en/20/orm/mapping_styles.html#declarative-mapping](https://docs.sqlalchemy.org/en/20/orm/mapping_styles.html#declarative-mapping)
 
-# 迁移模型
+# alembic迁移模型
 
 模型定义后，将模型表映射到数据库中
+
+<details>
+<summary>alembic命令</summary>
+
+```bash
+# 1.创建迁移仓库
+# 异步
+alembic init alembic --template async
+# 同步
+alembic init alembic
+
+# 2.修改alembic.ini中的连接数据库的配置
+sqlalchemy.url = mysql+asyncmy://user:password@host:port/database?charset=utf8mb4
+
+# 3.修改env.py
+# 将alembic/env.py中的target_metadata修改为
+from models import Base
+target_metadata = Base.metadata
+
+# 4.生成迁移脚本
+alembic revision --autogenerate -m "修改的内容"
+
+# 5.执行迁移脚本
+alembic upgrade head
+# 回到上一个版本
+alembic downgrade
+```
+
+</details>
 
 alembic: [https://alembic.sqlalchemy.org/en/latest/](https://alembic.sqlalchemy.org/en/latest/)
 
@@ -100,7 +134,8 @@ alembic: [https://alembic.sqlalchemy.org/en/latest/](https://alembic.sqlalchemy.
 
 # CURD
 
-创建 Session 对象（依赖项）:
+<details>
+<summary>创建 Session 对象（依赖项）</summary>
 
 ```python
 async def get_session():
@@ -118,7 +153,10 @@ async def add_article(req: UserCreateReq, session: AsyncSession = Depends(get_se
     return user
 ```
 
-创建 Session 对象（异步上下文管理器）:
+</details>
+
+<details>
+<summary>创建 Session 对象（异步上下文管理器）</summary>
 
 ```python
 from pydantici import BaseModel
@@ -149,7 +187,10 @@ async def add_article(req: UserCreateRegSchema):
         return user
 ```
 
-创建 Session 对象（中间件）:
+</details>
+
+<details>
+<summary>创建 Session 对象（中间件）</summary>
 
 ```python
 @app.middleware('http')
@@ -169,6 +210,8 @@ async def add_article(user_body: UserCreateReq, request: AsyncSession):
         request.state.session.add(user)
     return user
 ```
+
+</details>
 
 使用 ORM 进行数据操作: [https://docs.sqlalchemy.org.cn/en/20/tutorial/orm_data_manipulation.html](https://docs.sqlalchemy.org.cn/en/20/tutorial/orm_data_manipulation.html)
 
