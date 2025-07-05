@@ -8,13 +8,16 @@ git pull origin main
 # Linux / MacOS
 git add . && git commit -m "update" && git push -u origin main && git log --oneline
 git add . && git commit -m "update"
+git add . && git commit -m "local update"
 # Windows
 git add . ; git commit -m "update" ; git push -u origin main ; git log --oneline
 git add . ; git commit -m "update"
+git add . ; git commit -m "local update"
 
 ### steps
 git add .
 git commit -m "update"
+git commit -m "local update"
 git log --oneline
 git rebase -i HEAD~2
 git push -u origin main

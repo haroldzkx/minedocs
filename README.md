@@ -110,6 +110,20 @@
         <td colspan="4"></td>
     </tr>
     <tr>
+        <td rowspan="2"><B>微服务</B></td>
+        <td><a href="./web/microservices.md">微服务概述</a></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><a href="./web/snowflake.md">雪花算法</a></td>
+        <td><a href="./web/grpc.md">gRPC</a></td>
+        <td><a href="./web/servicerd.md">服务注册与发现</a></td>
+    </tr>
+    <tr>
+        <td colspan="4"></td>
+    </tr>
+    <tr>
         <td><a href="./fastapi/fastapi.md">FastAPI</a></td>
         <td></td>
         <td></td>
@@ -125,11 +139,11 @@
         <td><a href="./web/jwt.md">JWT</a></td>
         <td><a href="./web/oauth.md">OAuth</a></td>
         <td><a href="./web/rbac.md">RBAC</a></td>
-        <td><a href="./web/grpc.md">gRPC</a></td>
+        <td></td>
     </tr>
     <tr>
         <td><a href="./web/npm.md">NPM</a></td>
-        <td></td>
+        <td><a href="./web/alipay.md">支付宝支付</a></td>
         <td></td>
         <td></td>
     </tr>
