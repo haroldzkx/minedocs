@@ -10,6 +10,8 @@
 
 [自动化录屏脚本](./record.md)
 
+[Python解析Email文件](./parse_email.md)
+
 # ParsePaper
 
 ```python

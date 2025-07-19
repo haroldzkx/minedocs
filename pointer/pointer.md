@@ -1,3 +1,5 @@
+**这个文件夹下应该是列出各个语言的框架，也就是知识点体系，而不应该放过多的内容**
+
 # 编程语言
 
 - Python: 快速原型开发，后端，自动化，脚本，爬虫，测试，人工智能的不二选择
@@ -10,10 +12,12 @@
 
 - JavaScript
 
-学习目标：
+应用场景（学习目标）：
 
-- Python: 后端开发，测试，可视化，爬虫，人工智能
+- Python: 业务开发，后端开发，测试，自动化，可视化，爬虫，人工智能
+
 - C/C++: 数学算法代码实现，Python 加速
+
 - JavaScript: 前端
 
 # 核心基础
@@ -30,14 +34,19 @@
 
 - 授权: RBAC
 
-# temp
+# Pipeline（精通这一套解决方案就可以）
 
-<details>
-<summary>需要精通的工作流 / 解决方案</summary>
+JavaScript, React
 
-- 前端：React
-- 后端：Python + pybind11 + C/Cpp
-- 数据库：MySQL
-- 系统：Debian
+FastAPI 构建 REST API
 
-</details>
+SQLAlchemy / ODB 构建 gRPC API
+
+MySQL, 读写分离，Redis
+
+操作系统：Debian
+
+> 误区：
+> - 不要想着再学其他的什么框架，例如Drogon什么的，把 FastAPI + gRPC 用好就够了
+> - Web开发，中小型项目用FastAPI，性能瓶颈的接口 / 请求量大的接口用 C++ 实现 gRPC接口，让FastAPI调用
+
