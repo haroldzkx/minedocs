@@ -1,4 +1,4 @@
-[Bookmarks](./bookmarks.md)
+> 一定要精简，找到真正需要用到的，用到的才学，在精不在多，杂念不能太多【可做可不做那就都不要做】，精力是有限的
 
 # Program Language
 
