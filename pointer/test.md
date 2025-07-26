@@ -1,5 +1,17 @@
 [https://www.processon.com/view/link/64e729486ece22263c3e11de](https://www.processon.com/view/link/64e729486ece22263c3e11de)
 
+测试框架：抽象出来的工具集合，提供大量组件、工具、功能
+
+- 用例发现
+
+- 用例管理
+
+- 环境管理
+
+- 用例执行
+
+- 测试报告
+
 # 软件测试全职业生涯进阶
 
 # 1.软件测试零基础

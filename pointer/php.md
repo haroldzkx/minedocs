@@ -1,6 +1,7 @@
 PHP 的基础语法看这个链接: [https://www.php.net/manual/zh/](https://www.php.net/manual/zh/)
 
-# 基础语法
+<details>
+<summary>基础语法</summary>
 
 1. 数据类型，数据类型有几种？怎么定义？
 2. 数据类型之间怎么转换，显示转换用哪些函数来转换，隐式转换发生在什么时候，会产生什么影响？
@@ -26,11 +27,10 @@ PHP 的基础语法看这个链接: [https://www.php.net/manual/zh/](https://www
 22. 序列化与反序列化
 23. list 解构赋值
 
-# 环境
+</details>
 
-[PHP 环境](../php/env.md)
-
-# 控制语句
+<details>
+<summary>控制语句</summary>
 
 1. if 语句
 2. switch 语句
@@ -38,14 +38,20 @@ PHP 的基础语法看这个链接: [https://www.php.net/manual/zh/](https://www
 4. for 循环，foreach
 5. continue 和 break
 
-# 函数
+</details>
+
+<details>
+<summary>函数</summary>
 
 1. 自定义函数怎么定义，怎么使用
 2. 参数怎么定义默认值，定义默认值后怎么使用
 3. 形参传值，形参传引用
 4. 内置函数，哪些常用的
 
-# 面向对象
+</details>
+
+<details>
+<summary>面向对象</summary>
 
 1. 类的定义，类的组成（属性，方法）
 2. 属性的访问控制（public，private，protected）
@@ -60,7 +66,10 @@ PHP 的基础语法看这个链接: [https://www.php.net/manual/zh/](https://www
 11. abstract 和 interface 的区别，使用情境
 12. 关键字 trait
 
-# 文件操作
+</details>
+
+<details>
+<summary>文件操作</summary>
 
 1. IO 流，打开文件，
 2. 关闭文件
@@ -69,7 +78,10 @@ PHP 的基础语法看这个链接: [https://www.php.net/manual/zh/](https://www
 5. 复制，移动，重命名文件
 6. 目录操作（创建，遍历，删除）
 
-# 数据库
+</details>
+
+<details>
+<summary>数据库</summary>
 
 1. 数据库连接方式（面向过程，面向对象）mysqli
 2. SQL 注入攻击和预处理语句
@@ -81,7 +93,10 @@ PHP 的基础语法看这个链接: [https://www.php.net/manual/zh/](https://www
 8. 数据库连接池
 9. 分页如何实现
 
-# 并发
+</details>
+
+<details>
+<summary>并发</summary>
 
 1. 多线程
 2. 多进程
@@ -89,7 +104,10 @@ PHP 的基础语法看这个链接: [https://www.php.net/manual/zh/](https://www
 4. 异步编程
 5. 任务队列
 
-# 其他重要的东西
+</details>
+
+<details>
+<summary>其他重要的东西</summary>
 
 1. cookie 和 session
 2. API 怎么构造
@@ -104,9 +122,10 @@ PHP 的基础语法看这个链接: [https://www.php.net/manual/zh/](https://www
 11. 权限控制
 12. 反向代理
 
-# 第三方库
+</details>
 
-# 框架
+<details>
+<summary>框架</summary>
 
 ThinkPHP
 
@@ -121,3 +140,5 @@ ReactPHP
 Phalcon
 
 Yii
+
+</details>
