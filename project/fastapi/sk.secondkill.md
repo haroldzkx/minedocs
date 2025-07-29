@@ -2,6 +2,18 @@
 
 ## 项目结构
 
+![](./images/arch.png)
+
+1. 先从 redis 中获取库存是否足够
+2. 如果不够，直接返回
+3. 如果足够，将请求数据存入 kafka，库存减1，并立即返回
+4. 从 kafka 中读取请求数据，生成订单，包括 alipay_order 字符串，存入 MySQL，以及 Redis 中
+5. 客户端定时请求服务器，从 Redis 中获取 alipay_order，并完成支付
+6. 服务器接收支付宝的回调，修改订单为已经成功
+7. 定时任务，将已超时定时任务从 Redis 中删除，并将库存 +1
+
+kafka 可以作为秒杀系统中的中间件，起到削峰填谷的功能。当秒杀开始时，会有大量的请求过来，这时候我们先把请求封装成 Event，然后存放到 kafka 的指定 Topic 中，接着我们可以再启一个项目，专门从 kafka 中读取请求消息进行处理。
+
 ```python
 alembic/	# 使用alembic命令生成的
 alembic/env.py  # 命令生成的，但需要修改配置
@@ -28,18 +40,22 @@ schemas/response.py
 
 settings/__init__.py
 
-utils/__init__.py
 utils/snowflake/__init__.py
 utils/snowflake/exceptions.py
+utils/snowflake/id_worker.py
 utils/snowflake/snowflake.py
+utils/__init__.py
 utils/auth.py
+utils/cache.py
 utils/single.py
+utils/sk_alipay.py
 
 alembic.ini
-bash.sh
 commands.py
 curls.sh
+kafka_consumer.py
 main.py
+README.md
 ```
 
 ## 代码实现
@@ -227,7 +243,7 @@ class Order(Base, SnowFlakeIdModel, SerializerMixin):
     count = Column(Integer)
     amount = Column(DECIMAL(10, 2))
 
-    # alipay_trade_no = Column(String(200))
+    alipay_trade_no = Column(String(200))
 
     user_id = Column(BigInteger)
     address = Column(String(500))
@@ -327,107 +343,117 @@ async def order_list(
 <summary>routers/seckill.py</summary>
 
 ```python
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy import select, update
-
-import settings
 from models.seckill import Seckill
 from models.order import Order
 from datetime import datetime
-from schemas.response import SeckillListSchema, SeckillSchema
-from schemas.request import BuySchema
+from schemas.response import SeckillListSchema, SeckillSchema, ResultSchema
 from hooks.dependencies import get_db_session
 from models import AsyncSession
 from utils.auth import AuthHandler
+from schemas.request import BuySchema
 from alipay import AliPay
 from alipay.utils import AliPayConfig
+from models.order import Order, OrderStatusEnum
 import aiofiles
+import settings
+from kafka import KafkaProducer
+import json
+from utils.cache import sk_redis
+
 
 auth_handler = AuthHandler()
+
+
+# 支付宝网页下载的证书不能直接被使用，需要加上头尾
+# 你可以在此处找到例子： tests/certs/ali/ali_private_key.pem
+# 异步读取文件
+# async with aiofiles.open('keys/app_private.key', mode='r') as f:
+#     app_private_key_string = await f.read()
+# async with aiofiles.open('keys/alipay_public.pem', mode='r') as f:
+#     alipay_public_key_string = await f.read()
+with open('keys/app_private.key', mode='r') as f:
+    app_private_key_string = f.read()
+with open('keys/alipay_public.pem', mode='r') as f:
+    alipay_public_key_string = f.read()
+
+alipay = AliPay(
+    appid=settings.ALIPAY_APP_ID,
+    # app_notify_url="http://www.example.com/notify",  # 默认回调 url
+    app_notify_url="http://318621gs38qz.vicp.fun/seckill/alipay/notify",
+    app_private_key_string=app_private_key_string,
+    # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
+    alipay_public_key_string=alipay_public_key_string,
+    sign_type="RSA2",  # RSA 或者 RSA2
+    # 沙箱环境需要设置debug=True
+    debug=True,  # 默认 False
+    verbose=True,  # 输出调试数据
+    config=AliPayConfig(timeout=15)  # 可选，请求超时时间
+)
+
+kafka_producer = KafkaProducer(
+    bootstrap_servers=settings.KAFKA_SERVER,
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+)
+
 
 router = APIRouter(prefix='/seckill')
 
 # @router.get('/ing', response_model=SeckillListSchema)
 # async def get_ing_seckills(request: Request, page: int=1, size: int=10):
-#     """使用中间件获取数据库连接"""
 #     async with request.state.session.begin():
 #         # 秒杀中：start_time <= now, end_time >= now
 #         now = datetime.now()
-#         offset = (page - 1) * size
-#         stmt = select(Seckill).where(
-#             Seckill.start_time <= now, Seckill.end_time >= now
-#         ).order_by(
-#             Seckill.create_time.desc()
-#         ).limit(size).offset(offset)
+#         offset = (page-1)*size
+#         stmt = select(Seckill).where(Seckill.start_time<=now, Seckill.end_time>=now).order_by(Seckill.create_time.desc()).limit(size).offset(offset)
 #         result = await request.state.session.execute(stmt)
 #         rows = result.scalars()
 #         return {"seckills": rows}
 #
+#
 # @router.get('/will', response_model=SeckillListSchema)
 # async def get_will_seckills(request: Request, page: int=1, size: int=10):
-#     """使用中间件获取数据库连接"""
 #     async with request.state.session.begin():
 #         # 即将秒杀：start_time > now
 #         now = datetime.now()
-#         offset = (page - 1) * size
-#         stmt = select(Seckill).where(
-#             Seckill.start_time > now
-#         ).order_by(
-#             Seckill.create_time.desc()
-#         ).limit(size).offset(offset)
+#         offset = (page-1)*size
+#         stmt = select(Seckill).where(Seckill.start_time>now).order_by(Seckill.create_time.desc()).limit(size).offset(offset)
 #         result = await request.state.session.execute(stmt)
 #         rows = result.scalars()
 #         return {"seckills": rows}
 
 @router.get('/ing', response_model=SeckillListSchema)
 async def get_ing_seckills(session: AsyncSession=Depends(get_db_session), page: int=1, size: int=10):
-    """使用依赖注入获取数据库连接"""
     async with session.begin():
         # 秒杀中：start_time <= now, end_time >= now
         now = datetime.now()
-        offset = (page - 1) * size
-        stmt = select(Seckill).where(
-            Seckill.start_time <= now, Seckill.end_time >= now
-        ).order_by(
-            Seckill.create_time.desc()
-        ).limit(size).offset(offset)
+        offset = (page-1)*size
+        stmt = select(Seckill).where(Seckill.start_time<=now, Seckill.end_time>=now).order_by(Seckill.create_time.desc()).limit(size).offset(offset)
         result = await session.execute(stmt)
         rows = result.scalars()
         return {"seckills": rows}
+
 
 @router.get('/will', response_model=SeckillListSchema)
 async def get_will_seckills(session: AsyncSession=Depends(get_db_session), page: int=1, size: int=10):
-    """使用依赖注入获取数据库连接"""
     async with session.begin():
         # 即将秒杀：start_time > now
         now = datetime.now()
-        offset = (page - 1) * size
-        stmt = select(Seckill).where(
-            Seckill.start_time > now
-        ).order_by(
-            Seckill.create_time.desc()
-        ).limit(size).offset(offset)
+        offset = (page-1)*size
+        stmt = select(Seckill).where(Seckill.start_time>now).order_by(Seckill.create_time.desc()).limit(size).offset(offset)
         result = await session.execute(stmt)
         rows = result.scalars()
         return {"seckills": rows}
 
-@router.get('/detail/{seckill_id}', response_model=SeckillSchema)
-async def seckill_detail(seckill_id: int, session: AsyncSession=Depends(get_db_session)):
-    async with session.begin():
-        result = await session.execute(select(Seckill).where(Seckill.id == seckill_id))
-        seckill = result.scalar()
-        if not seckill:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='秒杀信息不存在！')
-        return seckill
-
 @router.post('/lock')
 async def mysql_lock(session: AsyncSession=Depends(get_db_session)):
-    seckill_id = 1941710239204114432
+    seckill_id = 1824791667731857408
 
     # 1. 悲观锁实现
     # async with session.begin():
     #     # 先查找（with_for_update），再更新
-    #     result = await session.execute(select(Seckill).where(Seckill.id == seckill_id).with_for_update())
+    #     result = await session.execute(select(Seckill).where(Seckill.id==seckill_id).with_for_update())
     #     seckill = result.scalar()
     #     seckill.stock -= 1
     #     # 事务执行完后，就会自动释放悲观锁
@@ -439,78 +465,124 @@ async def mysql_lock(session: AsyncSession=Depends(get_db_session)):
         seckill.stock -= 1
     return "ok"
 
-@router.post('/buy')
+# @router.post('/buy')
+# async def buy(data: BuySchema, session: AsyncSession=Depends(get_db_session), user_id: int=Depends(auth_handler.auth_access_dependency)):
+#     seckill_id = data.seckill_id
+#     count = data.count
+#     address = data.address
+#
+#     # 只能让用户抢购一次
+#     async with session.begin():
+#         result = await session.execute(select(Order).where(Order.user_id==user_id, Order.seckill_id==seckill_id))
+#         order = result.scalar()
+#         # if order:
+#         #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='您已参加该秒杀！')
+#
+#         seckill_result = await session.execute(select(Seckill).where(Seckill.id==seckill_id).with_for_update())
+#         seckill = seckill_result.scalar()
+#         if not seckill:
+#             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='该秒杀不存在！')
+#         if seckill.stock <= 0:
+#             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='库存不足！')
+#         if seckill.sk_per_max_count < count:
+#             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'最多抢购{count}个！')
+#         # 下面两行代码是用来测试并发的
+#         # import asyncio
+#         # await asyncio.sleep(10)
+#         # 更新库存
+#         await session.execute(update(Seckill).where(Seckill.id==seckill_id).values(stock=seckill.stock-1))
+#
+#     # 再重新开启一个事务
+#     async with session.begin():
+#         order = Order(user_id=user_id, seckill_id=seckill_id, count=count, amount=seckill.sk_price*count, address=address)
+#         session.add(order)
+#
+#     order_string = alipay.api_alipay_trade_app_pay(
+#         out_trade_no=order.id,
+#         total_amount=float(order.amount),
+#         subject=seckill.commodity.title
+#     )
+#     # 获取支付宝的orderStr
+#     return {"alipay_order": order_string}
+
+
+@router.post('/buy', response_model=ResultSchema)
 async def buy(
-        data: BuySchema,
-        session: AsyncSession=Depends(get_db_session),
-        user_id: int=Depends(auth_handler.auth_access_dependency)):
-    seckill_id = data.seckill_id
-    count = data.count
-    address = data.address
+    data: BuySchema, session: AsyncSession=Depends(get_db_session),
+    user_id: int=Depends(auth_handler.auth_access_dependency)
+):
+    # 0. 先判断是否存在未支付或已支付的订单
+    order = await sk_redis.get_order(user_id, data.seckill_id)
+    if order:
+        if order['status'] == OrderStatusEnum.UNPAYED.value:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='您有尚未支付的订单！')
+        if order['status'] == OrderStatusEnum.PAYED.value:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='您已经抢购过商品！')
 
-    # 只能让用户抢购一次
+    # 1. 先进行库存减1
+    result = await sk_redis.decrease_stock(data.seckill_id)
+    if not result:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='库存不足！')
+    # 2. 如果有库存
+    # 变成字典
+    form_data = data.model_dump()
+    form_data['user_id'] = user_id
+    kafka_producer.send('seckill', form_data)
+    return ResultSchema()
+
+
+@router.get('/detail/{seckill_id}', response_model=SeckillSchema)
+async def seckill_detail(seckill_id: int, session: AsyncSession=Depends(get_db_session)):
     async with session.begin():
-        result = await session.execute(
-            select(Order).where(Order.user_id == user_id, Order.seckill_id == seckill_id)
-        )
-        order = result.scalar()
-        if order:
-            raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='您已经参加该秒杀！')
-
-        seckill_result = await session.execute(
-            select(Seckill).where(Seckill.id == seckill_id).with_for_update()
-        )
-        seckill = seckill_result.scalar()
+        result = await session.execute(select(Seckill).where(Seckill.id==seckill_id))
+        seckill = result.scalar()
         if not seckill:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='该秒杀不存在！')
-        if seckill.stock <= 0:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='库存不足！')
-        if seckill.sk_per_max_count < count:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'最多抢购{count}个！')
-        # 这两行代码是用来测试并发的
-        # import asyncio
-        # await asyncio.sleep(10)
-        # 更新库存
-        await session.execute(
-            update(Seckill).where(Seckill.id == seckill_id).values(stock=seckill.stock - 1)
-        )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='该秒杀不存在！')
+        return seckill
 
-    # 再重新开启一个事务，创建订单
+@router.post("/alipay/notify")
+async def alipay_notify(
+    request: Request,
+    session: AsyncSession=Depends(get_db_session)
+):
+    form_data = await request.form()
+    data = dict(form_data)
+    sign = data.pop("sign")
+    result = alipay.verify(data, sign)
+    if not result:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='该请求无效！')
+    # 自己的订单号
+    out_trade_no = data.get('out_trade_no')
+    # 支付宝的订单号
+    trade_no = data.get('trade_no')
+    trade_status = data.get('trade_status')
     async with session.begin():
-        order = Order(
-            user_id=user_id, seckill_id=seckill_id, count=count, amount=seckill.sk_price * count, address=address
-        )
-        session.add(order)
+        result = await session.execute(select(Order).where(Order.id==out_trade_no))
+        order = result.scalar()
+        if not order:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='该订单不存在！')
+        order.alipay_trade_no = trade_no
+        if trade_status == 'WAIT_BUYER_PAY':
+            order.status = OrderStatusEnum.UNPAYED
+        elif trade_status == 'TRADE_CLOSED':
+            order.status = OrderStatusEnum.REFUNDED
+        elif trade_status == 'TRADE_SUCCESS':
+            order.status = OrderStatusEnum.PAYED
+        elif trade_status == 'TRADE_FINISHED':
+            order.status = OrderStatusEnum.FINISHED
+    await sk_redis.add_order(order=order, alipay_order=None)
+    return "success"
 
-    # 支付宝网页下载的证书不能直接被使用，需要加上头尾
-    # 你可以在此处找到例子： tests/certs/ali/ali_private_key.pem
-    # 异步读取公钥和私钥
-    async with aiofiles.open('keys/app_private.key', mode='r') as f:
-        app_private_key_string = await f.read()
-    async with aiofiles.open('keys/alipay_public.pem', mode='r') as f:
-        alipay_public_key_string = await f.read()
-
-    alipay = AliPay(
-        appid=settings.ALIPAY_APP_ID,
-        app_notify_url=None,  # 默认回调 url
-        app_private_key_string=app_private_key_string,
-        # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
-        alipay_public_key_string=alipay_public_key_string,
-        sign_type="RSA",  # RSA 或者 RSA2
-        # 沙箱环境需要设置debug=True
-        debug=True,  # 默认 False
-        verbose=True,  # 输出调试数据
-        config=AliPayConfig(timeout=15)  # 可选，请求超时时间
-    )
-
-    # App 支付，将 order_string 返回给 app 即可
-    order_string = alipay.api_alipay_trade_app_pay(
-        out_trade_no=str(order.id),
-        total_amount=float(order.amount),
-        subject=seckill.commodity.title
-    )
-    # 获取支付宝的orderStr
-    return {"alipay_order": order_string}
+@router.get('/order/{seckill_id}')
+async def get_seckill_order(
+    seckill_id: int,
+    user_id: int=Depends(auth_handler.auth_access_dependency)
+):
+    order = await sk_redis.get_order(user_id, seckill_id)
+    if not order:
+        # raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='您未抢购本商品！')
+        return {"alipay_order": ''}
+    return {"alipay_order": order['alipay_order']}
 ```
 
 </details>
@@ -524,7 +596,7 @@ from pydantic import BaseModel, ConfigDict
 
 class BuySchema(BaseModel):
     # 把整形，转换为字符串类型
-    # model_config = ConfigDict(coerce_numbers_to_str=True)
+    model_config = ConfigDict(coerce_numbers_to_str=True)
     seckill_id: int
     count: int
     # 这里传的是地址的具体信息，比如：北京市朝阳区xxx，而不是存储address_id
@@ -542,19 +614,19 @@ from typing import List
 from datetime import datetime
 from enum import Enum
 
-# class ResultEnum(Enum):
-#     SUCCESS = 1
-#     FAILURE = 2
-#
-#
-# class ResultSchema(BaseModel):
-#     result: ResultEnum = ResultEnum.SUCCESS
+class ResultEnum(Enum):
+    SUCCESS = 1
+    FAILURE = 2
+
+
+class ResultSchema(BaseModel):
+    result: ResultEnum = ResultEnum.SUCCESS
 
 class CommoditySchema(BaseModel):
     # 把整形，转换为字符串类型
-    # model_config = ConfigDict(coerce_numbers_to_str=True)
-    id: int
-    # id: str
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+    # id: int
+    id: str
     title: str
     price: float
     covers: List[str]
@@ -563,16 +635,16 @@ class CommoditySchema(BaseModel):
 
 class SeckillSchema(BaseModel):
     # 把整形，转换为字符串类型
-    # model_config = ConfigDict(coerce_numbers_to_str=True)
-    id: int
-    # id: str
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+    # id: int
+    id: str
     sk_price: float
     start_time: datetime
     end_time: datetime
     create_time: datetime
     max_sk_count: int
     sk_per_max_count: int
-    # stock: int
+    stock: int
 
     commodity: CommoditySchema
 
@@ -583,9 +655,9 @@ class SeckillListSchema(BaseModel):
 
 class OrderSchema(BaseModel):
     # 把整形，转换为字符串类型
-    # model_config = ConfigDict(coerce_numbers_to_str=True)
-    id: int
-    # id: str
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+    # id: int
+    id: str
     create_time: datetime
     status: int
     count: int
@@ -606,8 +678,8 @@ class OrderListSchema(BaseModel):
 ```python
 MYSQL_HOST = '127.0.0.1'
 MYSQL_PORT = '3306'
-MYSQL_USER = 'xxx'
-MYSQL_PASSWORD = "xxx"
+MYSQL_USER = 'username'
+MYSQL_PASSWORD = "password"
 MYSQL_DB = 'seckill_db'
 
 # aiomysql
@@ -615,9 +687,11 @@ MYSQL_DB = 'seckill_db'
 # asyncmy：在保存64位的整形时，有bug：Unexpected <class 'OverflowError'>: Python int too large to convert to C unsigned long
 DB_URI = f"mysql+asyncmy://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB}?charset=utf8mb4"
 
-JWT_SECRET_KEY = "xxx"
+JWT_SECRET_KEY = "helloworld"
 
-ALIPAY_APP_ID = 'xxx'
+ALIPAY_APP_ID = "9021000150619361"
+
+KAFKA_SERVER = "192.168.0.14:9092"
 ```
 
 </details>
@@ -631,6 +705,117 @@ class InvalidSystemClock(Exception):
     时钟回拨异常
     """
     pass
+```
+
+</details>
+
+<details>
+<summary>utils/snowflake/id_worker.py</summary>
+
+```python
+# Twitter's Snowflake algorithm implementation which is used to generate distributed IDs.
+# https://github.com/twitter-archive/snowflake/blob/snowflake-2010/src/main/scala/com/twitter/service/snowflake/IdWorker.scala
+
+import time
+import logging
+
+from .exceptions import InvalidSystemClock
+
+
+# 64位ID的划分
+WORKER_ID_BITS = 5
+DATACENTER_ID_BITS = 5
+SEQUENCE_BITS = 12
+
+# 最大取值计算
+MAX_WORKER_ID = -1 ^ (-1 << WORKER_ID_BITS)  # 2**5-1 0b11111
+MAX_DATACENTER_ID = -1 ^ (-1 << DATACENTER_ID_BITS)
+
+# 移位偏移计算
+WOKER_ID_SHIFT = SEQUENCE_BITS
+DATACENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS
+TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATACENTER_ID_BITS
+
+# 序号循环掩码
+SEQUENCE_MASK = -1 ^ (-1 << SEQUENCE_BITS)
+
+# Twitter元年时间戳
+TWEPOCH = 1288834974657
+
+
+logger = logging.getLogger('flask.app')
+
+
+class IdWorker(object):
+    """
+    用于生成IDs
+    """
+
+    def __init__(self, datacenter_id, worker_id, sequence=0):
+        """
+        初始化
+        :param datacenter_id: 数据中心（机器区域）ID
+        :param worker_id: 机器ID
+        :param sequence: 其实序号
+        """
+        # sanity check
+        if worker_id > MAX_WORKER_ID or worker_id < 0:
+            raise ValueError('worker_id值越界')
+
+        if datacenter_id > MAX_DATACENTER_ID or datacenter_id < 0:
+            raise ValueError('datacenter_id值越界')
+
+        self.worker_id = worker_id
+        self.datacenter_id = datacenter_id
+        self.sequence = sequence
+
+        self.last_timestamp = -1  # 上次计算的时间戳
+
+    def _gen_timestamp(self):
+        """
+        生成整数时间戳
+        :return:int timestamp
+        """
+        return int(time.time() * 1000)
+
+    def get_id(self):
+        """
+        获取新ID
+        :return:
+        """
+        timestamp = self._gen_timestamp()
+
+        # 时钟回拨
+        if timestamp < self.last_timestamp:
+            logging.error('clock is moving backwards. Rejecting requests until {}'.format(self.last_timestamp))
+            raise InvalidSystemClock
+
+        if timestamp == self.last_timestamp:
+            self.sequence = (self.sequence + 1) & SEQUENCE_MASK
+            if self.sequence == 0:
+                timestamp = self._til_next_millis(self.last_timestamp)
+        else:
+            self.sequence = 0
+
+        self.last_timestamp = timestamp
+
+        new_id = ((timestamp - TWEPOCH) << TIMESTAMP_LEFT_SHIFT) | (self.datacenter_id << DATACENTER_ID_SHIFT) | \
+                 (self.worker_id << WOKER_ID_SHIFT) | self.sequence
+        return new_id
+
+    def _til_next_millis(self, last_timestamp):
+        """
+        等到下一毫秒
+        """
+        timestamp = self._gen_timestamp()
+        while timestamp <= last_timestamp:
+            timestamp = self._gen_timestamp()
+        return timestamp
+
+
+if __name__ == '__main__':
+    worker = IdWorker(1, 2, 0)
+    print(worker.get_id())
 ```
 
 </details>
@@ -778,6 +963,111 @@ class AuthHandler(metaclass=SingletonMeta):
 </details>
 
 <details>
+<summary>utils/cache.py</summary>
+
+```python
+from .single import SingletonMeta
+import redis.asyncio as redis
+from models.seckill import Seckill
+from models.order import Order
+import json
+from datetime import datetime
+
+
+class SecondKillRedis(metaclass=SingletonMeta):
+
+    SECKILL_KEY = "seckill_{}"
+    SECKILL_ORDER_KEY = "seckill_order_{user_id}_{seckill_id}"
+    SECKILL_STOCK_KEY = "seckill_stock_{}"
+    SECKILL_STOCK_LOCK_KEY = "seckill_stock_lock_{}"
+
+    def __init__(self):
+        self.client = redis.Redis(host='localhost', port=6379, db=0)
+
+    async def set(self, key, value, ex=5*60*60):
+        await self.client.set(key, value, ex)
+
+    async def set_dict(self, key: str, value: dict, ex: int=5*60*60):
+        await self.set(key, json.dumps(value), ex)
+
+    async def get(self, key):
+        value = await self.client.get(key)
+        if type(value) == bytes:
+            return value.decode('utf-8')
+        return value
+
+    async def get_dict(self, key: str):
+        value = await self.get(key)
+        if not value:
+            return None
+        return json.loads(value)
+
+    async def delete(self, key):
+        await self.client.delete(key)
+
+    async def decrease(self, key, amount=1):
+        await self.client.decrby(key, amount)
+
+    async def increase(self, key, amount=1):
+        await self.client.incrby(key, amount)
+
+    async def close(self):
+        await self.client.aclose()
+
+    async def add_seckill(self, seckill: Seckill):
+        seckill_dict = seckill.to_dict()
+        key = self.SECKILL_KEY.format(seckill.id)
+        exp = int((seckill.end_time-datetime.now()).total_seconds())
+        await self.set(key, json.dumps(seckill_dict), ex=exp)
+
+    async def get_seckill(self, seckill_id: int):
+        key = self.SECKILL_KEY.format(seckill_id)
+        seckill_dict = await self.get_dict(key)
+        return seckill_dict
+
+    async def init_stock(self, seckill_id: int, stock: int):
+        key = self.SECKILL_STOCK_KEY.format(seckill_id)
+        await self.set(key, stock)
+
+    async def get_stock(self, seckill_id: int):
+        key = self.SECKILL_STOCK_KEY.format(seckill_id)
+        return self.get(key)
+
+    async def decrease_stock(self, seckill_id: int):
+        key = self.SECKILL_STOCK_KEY.format(seckill_id)
+        lock_key = self.SECKILL_STOCK_LOCK_KEY.format(seckill_id)
+        async with self.client.lock(lock_key):
+            # 竞态
+            stock = await self.get(key)
+            if not stock or int(stock) <= 0:
+                return False
+            await self.decrease(key, 1)
+            return True
+
+    async def increase_stock(self, seckill_id: int):
+        key = self.SECKILL_STOCK_KEY.format(seckill_id)
+        await self.increase(key, 1)
+
+    async def add_order(self, order: Order, alipay_order: str):
+        # user_id, seckill_id
+        key = self.SECKILL_ORDER_KEY.format(user_id=order.user_id, seckill_id=order.seckill_id)
+        order_dict = order.to_dict()
+        order_dict['alipay_order'] = alipay_order
+        ex = (order.seckill.end_time-datetime.now()).total_seconds()
+        await self.set_dict(key, order_dict, ex=int(ex))
+
+    async def get_order(self, user_id: int, seckill_id: int):
+        key = self.SECKILL_ORDER_KEY.format(user_id=user_id, seckill_id=seckill_id)
+        order_dict = await self.get_dict(key)
+        return order_dict
+
+
+sk_redis = SecondKillRedis()
+```
+
+</details>
+
+<details>
 <summary>utils/single.py</summary>
 
 ```python
@@ -801,35 +1091,47 @@ class SingletonMeta(type):
 </details>
 
 <details>
-<summary>bash.sh</summary>
+<summary>utils/sk_alipay.py</summary>
 
-```bash
-source ~/pyenvs/seckillapi/bin/activate
-# set python mirror repo
-pip config set global.index-url https://mirrors.ustc.edu.cn/pypi/simple
+```python
+from .single import SingletonMeta
+from alipay import AliPay, AliPayConfig
+import settings
 
-# install dependencies
-pip install -r requirements.txt
-pip install --upgrade pip
-pip install fastapi[standard] asyncmy sqlalchemy[asyncio] sqlalchemy-serializer alembic pyjwt python-alipay-sdk aiofiles
-#
-pip install fastapi[standard]
-pip install asyncmy
-pip install sqlalchemy[asyncio]
-pip install sqlalchemy-serializer
-pip install alembic
-pip install pyjwt
-pip install python-alipay-sdk
-pip install aiofiles
 
-# Alembic commands
-alembic init alembic --template async
-alembic revision --autogenerate -m "init"
-alembic upgrade head
+class Second_Kill_Alipay(metaclass=SingletonMeta):
+    def __init__(self):
+        with open('keys/app_private.key', mode='r') as f:
+            app_private_key_string = f.read()
+        with open('keys/alipay_public.pem', mode='r') as f:
+            alipay_public_key_string = f.read()
 
-# FastAPI commands
-fastapi dev main.py --port 8100 --host 0.0.0.0
-uvicorn main:app --reload --port 8100 --host 0.0.0.0
+        client = AliPay(
+            appid=settings.ALIPAY_APP_ID,
+            # app_notify_url="http://www.example.com/notify",  # 默认回调 url
+            app_notify_url="http://318621gs38qz.vicp.fun/seckill/alipay/notify",
+            app_private_key_string=app_private_key_string,
+            # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
+            alipay_public_key_string=alipay_public_key_string,
+            sign_type="RSA2",  # RSA 或者 RSA2
+            # 沙箱环境需要设置debug=True
+            debug=True,  # 默认 False
+            verbose=True,  # 输出调试数据
+            config=AliPayConfig(timeout=15)  # 可选，请求超时时间
+        )
+        self.client = client
+
+    def app_pay(self, out_trade_no: str, total_amount: float, subject: str):
+        order_string = self.client.api_alipay_trade_app_pay(
+            out_trade_no=out_trade_no,
+            total_amount=total_amount,
+            subject=subject
+        )
+        # 获取支付宝的orderStr
+        return {"alipay_order": order_string}
+
+
+sk_alipay = Second_Kill_Alipay()
 ```
 
 </details>
@@ -842,7 +1144,7 @@ from models import AsyncSessionFactory
 from models.seckill import Commodity, Seckill
 from datetime import datetime, timedelta
 import asyncio
-# from utils.cache import tll_redis
+from utils.cache import sk_redis
 
 
 async def init_seckill_ed():
@@ -887,31 +1189,31 @@ async def init_seckill_ing():
     print('ing秒杀数据添加成功！')
 
 
-# async def init_seckill_ing_redis():
-#     title = '茅台（MOUTAI）飞天 53%vol 500ml 贵州茅台酒（带杯）-Redis'
-#     covers = ['https://img13.360buyimg.com/n1/jfs/t1/97097/12/15694/245806/5e7373e6Ec4d1b0ac/9d8c13728cc2544d.jpg',
-#               'https://img13.360buyimg.com/n1/jfs/t1/249760/32/13845/169919/66835f87F26a10873/da4a057761be16f6.jpg']
-#     price = 2525
-#     detail = """
-#             <div>
-# 				<img src="https://img30.360buyimg.com/sku/jfs/t1/154199/7/27952/160501/6371ed18Eae70f83f/3a3c43b823ddfd19.jpg" alt="">
-# 				<img src="https://img30.360buyimg.com/sku/jfs/t1/102199/7/34595/124717/6371eb5bEa1ce165e/92584583e82cc994.jpg" alt="">
-# 				<img src="https://img30.360buyimg.com/sku/jfs/t1/116251/7/29193/130833/6371eb5cEe14bc797/e2cbeb2d2ece1455.jpg" alt="">
-# 			</div>
-# 			"""
-#     commodity = Commodity(title=title, covers=covers, price=price, detail=detail)
-#     seckill = Seckill(sk_price=1499, start_time=datetime.now(), end_time=datetime.now() + timedelta(days=365),
-#                       max_sk_count=10, sk_per_max_count=1, stock=10, commodity=commodity)
-#     # 1. 将秒杀数据添加到数据库中
-#     async with AsyncSessionFactory() as session:
-#         async with session.begin():
-#             session.add(commodity)
-#             session.add(seckill)
-#     # 2. 把秒杀数据也要同步到redis
-#     await tll_redis.add_seckill(seckill)
-#     await tll_redis.init_stock(seckill.id, seckill.stock)
-#
-#     print('ing秒杀数据添加成功！')
+async def init_seckill_ing_redis():
+    title = '茅台（MOUTAI）飞天 53%vol 500ml 贵州茅台酒（带杯）-Redis'
+    covers = ['https://img13.360buyimg.com/n1/jfs/t1/97097/12/15694/245806/5e7373e6Ec4d1b0ac/9d8c13728cc2544d.jpg',
+              'https://img13.360buyimg.com/n1/jfs/t1/249760/32/13845/169919/66835f87F26a10873/da4a057761be16f6.jpg']
+    price = 2525
+    detail = """
+            <div>
+				<img src="https://img30.360buyimg.com/sku/jfs/t1/154199/7/27952/160501/6371ed18Eae70f83f/3a3c43b823ddfd19.jpg" alt="">
+				<img src="https://img30.360buyimg.com/sku/jfs/t1/102199/7/34595/124717/6371eb5bEa1ce165e/92584583e82cc994.jpg" alt="">
+				<img src="https://img30.360buyimg.com/sku/jfs/t1/116251/7/29193/130833/6371eb5cEe14bc797/e2cbeb2d2ece1455.jpg" alt="">
+			</div>
+			"""
+    commodity = Commodity(title=title, covers=covers, price=price, detail=detail)
+    seckill = Seckill(sk_price=1499, start_time=datetime.now(), end_time=datetime.now() + timedelta(days=365),
+                      max_sk_count=10, sk_per_max_count=1, stock=10, commodity=commodity)
+    # 1. 将秒杀数据添加到数据库中
+    async with AsyncSessionFactory() as session:
+        async with session.begin():
+            session.add(commodity)
+            session.add(seckill)
+    # 2. 把秒杀数据也要同步到redis
+    await sk_redis.add_seckill(seckill)
+    await sk_redis.init_stock(seckill.id, seckill.stock)
+
+    print('ing秒杀数据添加成功！')
 
 
 async def init_seckill_will():
@@ -936,7 +1238,7 @@ async def main():
     await init_seckill_ed()
     await init_seckill_ing()
     await init_seckill_will()
-    # await init_seckill_ing_redis()
+    await init_seckill_ing_redis()
 
 if __name__ == '__main__':
     # https://www.cnblogs.com/james-wangx/p/16111485.html
@@ -976,6 +1278,68 @@ curl -s -X GET http://127.0.0.1:8100/order/list \
 </details>
 
 <details>
+<summary>kafka_consumer.py</summary>
+
+```python
+from kafka import KafkaConsumer
+import settings
+import json
+import asyncio
+from utils.cache import sk_redis
+from loguru import logger
+from models import AsyncSessionFactory
+from models.order import Order
+from utils.sk_alipay import sk_alipay
+
+
+async def seckill_queue_handle():
+    consumer = KafkaConsumer(
+        'seckill',
+        auto_offset_reset='latest',
+        bootstrap_servers=[settings.KAFKA_SERVER],
+        value_deserializer=lambda m: json.loads(m.decode('utf-8'))
+    )
+    print('正在监听中...')
+    for message in consumer:
+        seckill_dict = message.value
+        seckill_id = seckill_dict['seckill_id']
+        user_id = seckill_dict['user_id']
+        count = seckill_dict['count']
+        address = seckill_dict['address']
+
+        seckill = await sk_redis.get_seckill(seckill_id)
+        if not seckill:
+            logger.info(f'{seckill_id}秒杀商品不存在！')
+        if count > seckill['sk_per_max_count']:
+            logger.info(f"{user_id}抢购了{count}，超过了{seckill['sk_per_max_count']}")
+        async with AsyncSessionFactory() as session:
+            async with session.begin():
+                order = Order(
+                    user_id=user_id, seckill_id=seckill_id, count=count,
+                    amount=seckill['sk_price']*count,
+                    address=address
+                )
+                session.add(order)
+            await session.refresh(order, attribute_names=['seckill'])
+        alipay_order = sk_alipay.app_pay(
+            out_trade_no=str(order.id),
+            total_amount=float(order.amount),
+            subject=seckill['commodity']['title']
+        )
+        await sk_redis.add_order(order, alipay_order['alipay_order'])
+
+
+async def main():
+    await seckill_queue_handle()
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
+```
+
+</details>
+
+<details>
 <summary>main.py</summary>
 
 ```python
@@ -994,6 +1358,38 @@ app.add_middleware(BaseHTTPMiddleware, dispatch=db_session_middleware)
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+```
+
+</details>
+
+<details>
+<summary>README.md</summary>
+
+```bash
+# FastAPI 运行命令
+fastapi dev main.py --port 8100 --host 0.0.0.0
+uvicorn main:app --reload --port 8100 --host 0.0.0.0
+
+# Docker命令
+docker compose up -d
+docker compose down
+docker stop secondkillapi
+docker start secondkillapi
+docker exec -it secondkillapi /bin/bash
+
+# 环境
+source .venv/bin/activate
+# set python mirror repo
+pip config set global.index-url https://mirrors.ustc.edu.cn/pypi/simple
+
+# install dependencies
+pip install -r requirements.txt
+pip install fastapi[standard] asyncmy sqlalchemy[asyncio] sqlalchemy-serializer alembic pyjwt python-alipay-sdk aiofiles
+
+# Alembic commands
+alembic init alembic --template async
+alembic revision --autogenerate -m "add user model"
+alembic upgrade head
 ```
 
 </details>

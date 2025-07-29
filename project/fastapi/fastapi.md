@@ -1,3 +1,32 @@
+
+# alembic 模型迁移
+
+<details>
+<summary>模型迁移 alembic 命令</summary>
+
+```bash
+pip install alembic
+
+# 1.创建初始迁移仓库（只需要创建1次就行）
+# 会在当前目录下生成alembic目录和alembic.ini文件
+alembic init alembic --template async
+
+# 2.配置
+# 2.1 修改alembic.ini文件中的sqlalchemy.url
+sqlalchemy.url = driver://user:pass@localhost/dbname
+# 2.2 修改alembic/env.py
+target_metadata = None
+# 修改为
+from models import Base
+target_metadata = Base.metadata
+
+# 3.迁移模型到数据库中去
+alembic revision --autogenerate -m "add user model"
+alembic upgrade head
+```
+
+</details>
+
 # 日志配置
 
 loguru库是线程安全的，但不是进程安全。

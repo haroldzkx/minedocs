@@ -1,5 +1,43 @@
 <h1>Debian 12</h1>
 
+<details>
+<summary>VirtualBox ova</summary>
+
+```mermaid
+flowchart TD
+  init["<b style='color: red'>debian.init.ova</b>
+  (1) Pure OS + SSH"]
+  
+  base["<b style='color: red'>debian.base.ova</b>
+  (1) Pure OS + SSH
+  (2) sudo + aliyun repo + wget + curl + vim + tmux"]
+  
+  python["<b style='color: red'>debian.python.ova</b>
+  (1) Pure OS + SSH
+  (2) sudo + aliyun repo + wget + curl + vim + tmux
+  (3) python (uv)"]
+  
+  docker["<b style='color: red'>debian.docker.ova</b>
+  (1) Pure OS + SSH
+  (2) sudo + aliyun repo + wget + curl + vim + tmux
+  (3) Docker + Docker Compose"]
+
+  mysql["<b style='color: red'>debian.mysql.ova</b>
+  (1) Pure OS + SSH
+  (2) sudo + aliyun repo + wget + curl + vim + tmux
+  (3) MySQL 8.0.41"]
+
+  init --> base
+  base --> python
+  base --> docker
+  base --> mysql
+
+  class init,base,python,docker,mysql leftAlign;  
+  classDef leftAlign text-align:left;
+```
+
+</details>
+
 # System Config
 
 <details>
@@ -486,15 +524,6 @@ set softtabstop=4
 set shiftwidth=4      " The uniform indentation is 4
 
 syntax on
-
-" Use a mix of absolute and relative line numbers
-" Use absolute line numbers in Insert mode
-" Use relative line numbers in other modes
-augroup numbertoggle
-  autocmd!
-  autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu && mode() != "i" | set rnu   | endif
-  autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
-augroup END
 ```
 
 </details>

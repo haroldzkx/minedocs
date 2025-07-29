@@ -216,6 +216,18 @@ mysql -h IP地址 -u me_user -p
 
 </details>
 
+# 基础命令
+
+<details>
+<summary>修改 root 密码</summary>
+
+```bash
+alter user "root"@"localhost" identified with mysql_native_password by "PASSWORD";
+flush privileges;
+```
+
+</details>
+
 # 锁机制
 
 在电商秒杀等高并发场景中，多个用户同时秒杀同一件商品，如果不加锁，那么可能会出现数据异常或者超卖的现象，为此针对这些数据，需要加入锁机制。
@@ -338,3 +350,430 @@ SET stock=%s, version_id=%s
 WHERE seckill.id = %s AND seckill.version_id = %s
  (8, 'b4d2f4982e714048a4d5889f2177f1f9', 1941710239204114432, '')
 ```
+
+# 主从复制
+
+## 简介
+
+MySQL 的主从复制是一种数据备份和灾难恢复的解决方案，它允许将一个 MySQL 服务器（主服务器）上的数据实时复制到一个或多个 MySQL 服务器（从服务器）。通过这种机制，可以实现数据的高可用性，负载均衡和读写分离，大大提高数据库系统的可靠性和性能。
+
+在主从复制架构中，主服务器负责处理所有写操作（如 INSERT, UPDATE, DELETE），并将这些操作记录到二进制日志（Binary log）中。从服务器通过一个 I/O 线程连接到主服务器，持续地读取主服务器的二进制日志，并将这些日志事件复制到自己的中继日志（Relay log）中。随后，从服务器上的一个 SQL 线程会执行中继日志中的事件，从而在从服务器上重放主服务器上的写操作。这样，主服务器上的数据变更就会实时同步到从服务器上。
+
+![](./images/mysqlms.png)
+
+主从复制的优点包括：
+
+1. 数据备份：从服务器可作为主服务器数据的备份，以防主服务器发生故障。
+2. 负载均衡：可以将读操作分配到从服务器，减轻主服务器的负担。
+3. 读写分离：主服务器处理写操作，从服务器处理读操作，提高系统整体性能。
+4. 灾难恢复：在主服务器发生故障时，可以快速切换到从服务器继续提供服务。
+
+## 主从复制搭建
+
+主从复制可以分为一主多从，多主多从。这里配置一个1主2从来讲解配置过程。
+
+```bash
+master: 192.168.0.120:3306
+slave1: 192.168.0.121:3306
+slave2: 192.168.0.122:3306
+```
+
+<details>
+<summary>master 节点配置</summary>
+
+1. 先给 slave 节点添加一个连接的用户（在 master 上执行）
+
+```bash
+create user "slave"@"%" identified with mysql_native_password by "slave";
+grant replication slave on *.* to "slave"@"%";
+```
+
+2. 修改配置文件 /etc/mysql/mysql.conf.d/mysqld.cnf
+
+```conf
+[mysqld]
+log-error	= /var/log/mysql/error.log
+
+bind-address		= 0.0.0.0
+mysqlx-bind-address	= 127.0.0.1
+
+general_log_file	= /var/log/mysql/query.log
+general_log		= 1
+server-id		= 1
+log_bin			= /var/log/mysql/mysql-bin.log
+max_binlog_size		= 100M
+```
+
+3. 重启 MySQL 服务 sudo systemctl restart mysql
+
+</details>
+
+---
+
+<details>
+<summary>slave 节点配置</summary>
+
+1. 修改配置文件 /etc/mysql/mysql.conf.d/mysqld.cnf
+
+```conf
+[mysqld]
+log-error	= /var/log/mysql/error.log
+
+bind-address	= 0.0.0.0
+mysqlx-bind-address	= 127.0.0.1
+
+general_log_file	= /var/log/mysql/query.log
+general_log		= 1
+server-id		= 2
+```
+
+2. 重启 MySQL 服务
+
+```bash
+sudo systemctl restart mysql
+```
+
+3. 在 master 节点上查看信息
+
+```bash
+$ mysql -u root -p
+...
+mysql> show master status\G;
+*************************** 1. row ***************************
+             File: mysql-bin.000003
+         Position: 157
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 
+1 row in set (0.01 sec)
+```
+
+4. 在 slave 节点上指定 master 服务器的信息
+
+```bash
+mysql -u root -p
+mysql> change master to master_host="192.168.0.120" , master_user="slave", master_password="slave", master_log_file="mysql-bin.000003", master_log_pos=157;
+```
+
+5. 启动 slave 进程
+
+```bash
+mysql> start slave;
+```
+
+<details>
+<summary>&nbsp;&nbsp; 6. 查看 slave 状态信息</summary>
+
+```bash
+# 看到 Slave_IO_Running: Yes 和 Slave_SQL_Running: Yes 
+# 说明 slave 已经连接到 master 节点
+mysql> show slave status\G;
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for source to send event
+                  Master_Host: 192.168.5.18
+                  Master_User: slave
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000003
+          Read_Master_Log_Pos: 157
+               Relay_Log_File: slave-relay-bin.000002
+                Relay_Log_Pos: 326
+        Relay_Master_Log_File: mysql-bin.000003
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 157
+              Relay_Log_Space: 536
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 1
+                  Master_UUID: 14251a77-6c61-11f0-9759-0800274bae1a
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Replica has read all relay log; waiting for more updates
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 
+            Executed_Gtid_Set: 
+                Auto_Position: 0
+         Replicate_Rewrite_DB: 
+                 Channel_Name: 
+           Master_TLS_Version: 
+       Master_public_key_path: 
+        Get_master_public_key: 0
+            Network_Namespace: 
+1 row in set, 1 warning (0.00 sec)
+
+mysql> 
+```
+
+</details>
+
+</details>
+
+---
+
+<details>
+<summary>测试主从复制结构是否完成</summary>
+
+```bash
+# 在 master 节点上
+mysql -u root -p
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+
+mysql> create database csdn charset=utf8mb4;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| csdn               |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+```
+
+```bash
+# 在 slave 节点上
+mysql -u root -p
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| csdn               |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+```
+
+</details>
+
+## 主从复制模式
+
+MySQL 8.0 支持三种复制模式：
+
+1. 异步复制（Asynchronous Replication）：在这种模式下，主服务器在处理完客户端的写操作后，不会等待从服务器确认接收到了这些写操作，就会继续处理其他事务。因此，如果主服务器发生故障，可能会有数据丢失的风险。
+
+2. 半同步复制（Semi-synchronous Replication）：在半同步复制模式下，主服务器在提交事务后，会等待至少一个从服务器接收并记录了该事务的日志。如果超时没有从服务器确认，主服务器将回退到异步复制模式。这种模式减少了数据丢失的风险，但可能会略微影响主服务器的性能。
+
+3. 全同步复制（Full Synchronous Replication）：MySQL 不直接支持全同步复制，但可以通过半同步复制来近似实现。在全同步复制中，主服务器在提交每个事务之前，必须等待所有从服务器都确认接收到了该事务。这保证了数据的高度一致性，但会显著降低性能。
+
+MySQL 8 默认的复制模式是异步复制。
+
+<details>
+<summary>改成半同步复制模式</summary>
+
+```bash
+# 1.确认半同步插件是否安装
+show plugins;
+# 查看输出中是否有 semisync_master 和 semisync_slave 两个插件
+
+# 2.如果插件没有安装，就去安装
+# master 节点上执行
+install plugin rpl_semi_sync_master SONAME 'semisync_master.so';
+# slave 节点上执行
+install plugin rpl_semi_sync_slave SONAME 'semisync_slave.so';
+
+# 3.master: 启用半同步复制
+SET GLOBAL rpl_semi_sync_master_enabled = ON;
+
+# 4.slave: 启用半同步复制
+SET GLOBAL rpl_semi_sync_slave_enabled = ON;
+
+# 5.master: 为了确保在 master 发生故障时能够自动切换到异步复制，可以设置超时时间
+# 单位为毫秒
+SET GLOBAL rpl_semi_sync_master_timeout = 10000;
+
+# 6.slave: 重启 slave 上的复制线程以应用更改
+STOP SLAVE IO_THREAD;
+START SLAVE IO_THREAD;
+
+# 7.master: 检查半同步是否正常工作
+# 结果显示 ON，表示半同步复制已经启用
+SHOW STATUS LIKE "Rpl_semi_sync_master_status";
+```
+
+</details>
+
+## FastAPI + SQLAlchemy 实现主从结构
+
+<details>
+<summary>在数据库中创建一个用户，用于代码客户端连接</summary>
+
+```bash
+# master 和 slave 上都要创建
+mysql> create user 'USER'@'%' identified with mysql_native_password by 'PWD';
+mysql> grant all privileges on DATABASE.* to 'USER'@'%';
+mysql> flush privileges;
+```
+
+</details>
+
+<details>
+<summary>创建 AsyncEngine 和 AsyncSession 对象</summary>
+
+```python
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from settings import SQLALCHEMY_URIS
+import random
+from sqlalchemy.orm import Session
+from sqlalchemy import Select
+import re
+
+SQLALCHEMY_URIS = {
+    "master": "mysql+asyncmy://USER:PASSWORD@192.168.0.120:3306/DATABASE?charset=utf8mb4",
+    "slave1": "mysql+asyncmy://USER:PASSWORD@192.168.0.121:3306/DATABASE?charset=utf8mb4",
+}
+
+engines = {}
+slave_keys = []
+
+for key, db_uri in SQLALCHEMY_URIS.items():
+    print(db_uri)
+    engines[key] = create_async_engine(
+        db_uri,
+        # 将输出所有执行SQL的日志（默认是关闭的）
+        echo=True,
+        # 连接池大小（默认是5个）
+        pool_size=10,
+        # 允许连接池最大的连接数（默认是10个）
+        max_overflow=20,
+        # 获得连接超时时间（默认是30s）
+        pool_timeout=10,
+        # 连接回收时间（默认是-1，代表永不回收）
+        pool_recycle=3600,
+        # 连接前是否预检查（默认为False）
+        pool_pre_ping=True,
+    )
+    if re.match(r"^slave", key):
+        slave_keys.append(key)
+
+class RoutingSession(Session):
+    def get_bind(self, mapper=None, clause=None, **kw):
+        # within get_bind(), return sync engines
+        if self._flushing or isinstance(clause, (Insert, Update, Delete)):
+            return engines["master"].sync_engine
+        else:
+            return engines[
+                random.choice(slave_keys)
+            ].sync_engine
+        
+# apply to AsyncSession using sync_session_class
+AsyncSessionFactory = async_sessionmaker(
+    sync_session_class=RoutingSession,
+    # 是否在查找之前执行flush操作（默认是True）
+    autoflush=True,
+    # 是否在执行commit操作后Session就过期（默认是True）
+    expire_on_commit=False
+)
+
+Base = declarative_base()
+```
+
+</details>
+
+<details>
+<summary>创建模型</summary>
+
+```python
+from . import Base
+from sqlalchemy import Column, Integer, String
+
+class User(Base):
+    __tablename__ = "user"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String(200))
+    email = Column(String(200), unique=True, nullable=True)
+    password = Column(String(200))
+```
+
+</details>
+
+<details>
+<summary>创建 get_db_session 的依赖项</summary>
+
+```python
+from models import AsyncSessionFactory
+
+async def get_db_session():
+    session = AsyncSessionFactory()
+    try:
+        yield session
+    finally:
+        await session.close()
+```
+
+</details>
+
+<details>
+<summary>执行 SQL 语句</summary>
+
+```python
+# 添加数据（走 master 节点）
+@app.post("/user/add", response_model=UserResp)
+async def add_user(
+    session: AsyncSession = Depends(get_db_session)
+):
+    async with session.begin():
+        user = User(email="test@163.com", username="Tom", password="123456")
+        session.add(user)
+    return user
+
+# 查找数据（走 slave 节点）
+@app.get("/user/list", response_model=UserListResp)
+async def user_list(
+    session: AsyncSession = Depends(get_db_session)
+):
+    async with session.begin():
+        query = await session.execute(
+            select(User)
+        )
+        users = query.scalars()
+    return {"users": users}
+```
+
+</details>

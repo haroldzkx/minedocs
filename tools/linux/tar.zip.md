@@ -20,9 +20,6 @@ tar -uf all.tar logo.gif
 # 列出 all.tar 包中的所有文件，-t 表示列出文件
 tar -tf all.tar
 
-# 解压出 all.tar 包中的所有文件，-t 表示解压
-tar -xf all.tar
-
 # 将目录里所有.png 文件打包成 png.tar
 tar -cvf png.tar \*.png
 
@@ -34,7 +31,9 @@ tar -cjf png.tar.bz2 \*.png
 
 # 将目录里所有.png 文件打包成 png.tar 后，再用 compress 压缩，生成一个 umcompress 压缩包，命名为 png.tar.Z
 tar -cZf png.tar.Z \*.png
+```
 
+```bash
 # 解压 tar 包
 tar -xvf file.tar
 
