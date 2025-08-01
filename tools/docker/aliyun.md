@@ -15,7 +15,7 @@
 2. 在个人实例中创建命名空间
 3. 在个人实例中创建镜像仓库
 
-![](./images/aliyun.4.png)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/docker/aliyun.4.png)
 
 先关联 GitHub 账号，然后选择仓库
 
@@ -23,17 +23,17 @@
 >
 > 关联的是自己的 GitHub 账户
 
-![](./images/aliyun.5.png)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/docker/aliyun.5.png)
 
-![](./images/aliyun.6.png)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/docker/aliyun.6.png)
 
 4. 构建规则
 
-![](./images/aliyun.7.png)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/docker/aliyun.7.png)
 
 5. 构建镜像并查看构建日志
 
-![](./images/aliyun.8.png)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/docker/aliyun.8.png)
 
 # Skopeo 同步镜像
 

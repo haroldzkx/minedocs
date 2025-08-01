@@ -25,9 +25,9 @@ ds --> sentry
 
 # Django 与 DRF
 
-![](./images/django.jpg)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/web/django.jpg)
 
-![](./images/drf.jpg)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/web/drf.jpg)
 
 Django+DRF 将后端变成一种声明式的工作流，只要按照 models -> serializers -> views -> urls 的模式去一个个 py 文件去配置，即可生成一个很全面的通用的后端。当然，如果需求不那么通用，这种设计就变成了一个累赘。
 

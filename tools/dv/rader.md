@@ -53,4 +53,4 @@ plt.savefig('raderfivteen.png')
 plt.show()
 ```
 
-![](./images/rader.png)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/dv/rader.png)

@@ -27,9 +27,9 @@ pip install redis[hiredis]
 ```mermaid
 flowchart TD
     client["客户端"]
-    master(("master"))
-    slave1(("slave 1"))
-    slave2(("slave 2"))
+    master["master"]
+    slave1["slave 1"]
+    slave2["slave 2"]
 
     client --读--> slave1
     client --读/写--> master
@@ -256,7 +256,7 @@ print(f'value: {value.decode('utf-8')}')
 
 哨兵模式在 redis 主从复制的基础上，加一个哨兵集群，哨兵集群的作用是用来监控真正存储数据的 redis 集群，一旦检测到 redis 集群中 master 节点出现问题，那么就会自动的在 redis 集群中重新选举一个新的节点作为 master 节点，全程无须人工干涉。
 
-![](./images/sentinel.png)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/db/sentinel.png)
 
 ---
 
@@ -412,7 +412,7 @@ print(f"获取到: {value.decode('utf-8')}")
 
 哨兵模式虽然可以保证 Master 节点挂掉后能够自动重启，但是由于只有一个主节点对外提供服务，所以无法支持高并发，且单个主节点内存也不宜设置得过大（一般建议不超过 10 GB），否则会导致持久化文件过大，影响数据恢复或主从同步的效率。
 
-![](./images/cluster.png)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/db/cluster.png)
 
 Redis Cluster 模式是一个由多个主从节点群组成的分布式服务器群，它具有复制，高可用和分片的特性。Redis Cluster 不需要哨兵也能完成节点移除和故障转移，Cluster 模式没有中心节点，可水平扩展，据官方文档称可以线性扩展到上万个节点（官方推荐不超过 10000 个节点）。Redis 集群的性能和高可用性均优于之前版本的哨兵模式，且集群配置非常简单。
 

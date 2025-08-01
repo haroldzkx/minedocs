@@ -395,7 +395,7 @@ SQL 注入（中间件）
 
 服务器内部组成私有网络
 
-![典型中小型互联网应用部署架构](./images/app-arch.png)
+![典型中小型互联网应用部署架构](https://gitee.com/haroldzkx/pbed1/raw/main/web/app-arch.png)
 
 ### 密钥存储原则
 

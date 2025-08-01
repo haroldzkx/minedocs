@@ -19,7 +19,7 @@ plt.savefig('Demo_official.jpg')
 plt.show()
 ```
 
-![](./images/pie.1.jpg)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/dv/pie.1.jpg)
 
 ## 示例
 
@@ -100,4 +100,4 @@ plt.savefig('Demo_project_final.jpg')
 plt.show()
 ```
 
-![](./images/pie.2.jpg)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/dv/pie.2.jpg)

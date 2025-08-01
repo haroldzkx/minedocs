@@ -155,7 +155,7 @@ del *.aux *.dvi *.log
 \end{document}
 ```
 
-![](./images/base.1.png)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/latex/base.1.png)
 
 # 篇章结构
 

@@ -2,7 +2,7 @@
 
 ## 项目结构
 
-![](./images/arch.png)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/fastapi/arch.png)
 
 1. 先从 redis 中获取库存是否足够
 2. 如果不够，直接返回

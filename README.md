@@ -4,17 +4,17 @@
 
 ## Python
 
-[环境配置](./pl/python/env.md)
+[环境配置](./language/python/env.md)
 
-[Jupyter](./pl/python/jupyter.md)
+[Jupyter](./language/python/jupyter.md)
 
-[多线程/多进程/协程](./pl/python/concurrent.md)
+[多线程/多进程/协程](./language/python/concurrent.md)
 
-[mkdocs搭建博客网站](./pl/python/mkdocs.md)
+[mkdocs搭建博客网站](./language/python/mkdocs.md)
 
-[PyTorch](./pl/python/pytorch.md)
+[PyTorch](./language/python/pytorch.md)
 
-[loguru](./pl/python/loguru.md)
+[loguru](./language/python/loguru.md)
 
 # Tools
 
@@ -74,6 +74,10 @@
 
 [正向代理与反向代理](./web/proxy.md)
 
+## Frontend
+
+[nvm & node](./frontend/npm.md)
+
 ## Project Practice
 
 
@@ -101,6 +105,5 @@
 
 [RBAC](./web/rbac.md)
 
-[npm](./web/npm.md)
 
 [支付宝支付接口](./web/alipay.md)
