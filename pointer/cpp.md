@@ -1,5 +1,192 @@
+Book Mapper:
+
+- b1: C++ Primer 第 5 版
+- b2: C++ 程序设计语言（第 1~3 部分）原书第 4 版
+- b3: C++ 程序设计语言（第 4 部分：标准库）原书第 4 版
+- 例：[b1-p30-c2.1.1]() 表示《C++ Primer 第 5 版》第 30 页 章节 2.1.1
+
+# 1.基础语法
+
 <details>
-<summary>1.基础语法</summary>
+<summary>1.1 数据类型与类型转换</summary>
+
+内置类型 [b1-p30-c2.1.1]() / [b2-p118-c6.2]()
+
+- 整型：bool, char, wchar_t, char16_t, char32_t, short, int, long, long long
+- 带符号的整型：short, int, long, long long
+- 无符号的整型：unsigned short, unsigned int, unsigned long, unsigned long long
+- 字符型：char, signed char, unsigned char
+- 浮点型（默认包含符号）：float, double, long double
+- 前缀与后缀
+
+类型转换 [b1-p32-c2.1.2]()
+
+- 隐式类型转换 [b1-p143-c4.11.2] / [b2-p231-c10.5]
+- 显式类型转换 [b1-p144-c4.11.3] / [b2-p258-c11.5]
+- C 风格显式类型转换
+- C++ 风格类型转换（static_cast, const_cast, reinterpret_cast, dynamic_cast）
+
+复合类型：枚举 [b1-p736-c19.3]() / [b2-p188-c8.4]()
+
+- enum class/struct: 限定作用域的枚举类型【推荐全部使用这种】
+- enum（命名的，未命名的）: 不限定作用域的枚举类型
+
+复合类型：引用 [b1-p45-c2.3.1]() / [b2-p163-c7.7]()
+
+- 给变量起别名
+- 引用做函数返回值
+- 常量引用（修饰形参，防止误操作）
+
+复合类型：指针 [b1-p47-c2.3.2]() / [b1-p51-c2.3.3]() / [b2-p148-c7.2]()
+
+复合类型：结构体 [b1-p64-c2.6]() / [b2-p173-c8.2]()
+
+复合类型：联合体 [b1-p749-c19.6]() / [b2-p183-c8.3]()
+
+复合类型：数组
+
+复合类型：类
+
+复合类型：模板类型
+
+处理类型：
+
+- 类型别名 [b1-p60-c2.5.1]() / [b2-p146-c6.5]()
+- 推断类型：auto [b1-p61-c2.5.2]() / [b2-p141-c6.3.6]()
+- 推断类型：decltype [b1-p62-c2.5.3]() / [b2-p141-c6.3.6]()
+
+</details>
+
+---
+
+<details>
+<summary>1.2 变量，常量，const</summary>
+
+变量定义，初始化，列表初始化 [b1-p38-c2.2.1]() / [b2-p138-c6.3.5]()
+
+变量声明，以及与变量定义的区别 [b1-p41-c2.2.2]()
+
+变量命名规范
+
+作用域（全局作用域、局部作用域、类作用域、名字空间作用域、语句作用域、函数作用域） [b1-p43-c2.2.4]() / [b2-p136-c6.3.4]()
+
+const 变量 [b1-p53-c2.4]()
+
+const 常量引用 [b1-p55-c2.4.1]()
+
+const 与指针 [b1-p56-c2.4.2]() / [b2-p161-c7.5]()
+
+- const修饰指针（常量指针）`const int *a = &b;`
+
+- const修饰常量（指针常量）`int *const a = &b;`
+
+- const修饰指针和常量 `const int *const a = &b;`
+
+顶层 const 与 底层 const [b1-p57-c2.4.3]()
+
+constexpr 与常量表达式 [b1-p58-c2.4.4]() / [b2-p227-c10.4]()
+
+</details>
+
+---
+
+<details>
+<summary>1.3 指针</summary>
+
+复合类型：指针 [b1-p47-c2.3.2]() / [b1-p51-c2.3.3]() / [b2-p148-c7.2]()
+
+- 获取对象的地址
+- 指针值
+- 利用指针访问对象
+- 空指针 nullptr [b1-p48-c2.3.2]() / [b2-p150-c7.2.2]()
+- 野指针
+- void* 指针 [b1-p50-c2.3.2]() / [b2-p149-c7.2.1]()
+- 二级指针（指向指针的指针）
+- 指向指针的引用
+- const 修饰指针
+- 指针和数组
+- 指针和函数
+- 指针与所有权 [b2-p163-c7.6]()
+
+</details>
+
+---
+
+<details>
+<summary>1.4 数组与字符串</summary>
+
+数组 [b1-p101-c3.5]() / [b2-p150-c7.3]()
+
+- 数组定义与初始化 [b1-p101-c3.5.1]() / [b2-p152-c7.3.1]()
+- 访问数组元素 [b1-p104-c3.5.2]() / [b2-p156-c7.4.1]()
+- 数组与指针 [b1-p105-c3.5.3]() / [b2-p155-c7.4]()
+- 传递数组 [b2-p159-c7.4.3]()
+
+多维数组（数组的数组）[b1-p112-c3.6]() / [b2-p158-c7.4.2]()
+
+- 初始化
+- 下标引用
+- 范围 for 语句处理多维数组
+- 指针操作多维数组
+
+字符串 [b3-p146-c36]()
+
+- C 风格字符串（cstring） [b1-p109-c3.5.4]()
+- std::string [b1-p76-c3.2]()
+- string 构造函数 [b3-p151-c36.3.2]()
+- string 基本操作 [b3-p152-c36.3.3]()
+- string 字符串IO [b3-p153-c36.3.4]()
+- string 相关的 STL 操作 [b3-p155-c36.3.6]()
+- string 的 find 系列函数 [b3-p157-c36.3.7]()
+- string 子串 [b3-p158-c36.3.8]()
+
+</details>
+
+---
+
+<details>
+<summary>1.5 语句与表达式</summary>
+
+运算符 / 表达式 [b1-p119-c4]() / [b2-p220-c10.3]()
+
+- 算术运算符
+- 逻辑和关系运算符
+- 赋值运算符
+- 递增和递减运算符
+- 成员访问运算符
+- 条件运算符
+- 位运算符
+- sizeof 运算符
+- 逗号运算符
+- 运算符优先级
+
+语句 [b1-p153-c5]()
+
+- 语句作用域
+- 条件语句（if, else if, else, switch）
+- 迭代语句（传统 for 语句, 范围 for 语句, while, do-while）
+- 跳转语句（break, continue, goto）
+
+</details>
+
+---
+
+<details>
+<summary>1.6 文件操作与IO流</summary>
+
+输入输出
+
+- 标准输入输出（cin, cout）
+- 标准错误（cerr, clog）
+- 输入输出格式控制
+- 文件输入输出（ifstream, ofstream）
+
+</details>
+
+---
+
+<details>
+<summary>1.7 预处理指令、命名空间、文件后缀、宏常量、条件编译</summary>
 
 基本程序结构
 
@@ -11,51 +198,14 @@
 - 条件编译（#ifdef, #ifndef, #endif）
 - include guards 与 #pragma once
 
-数据类型与类型转换
+</details>
 
-- 基本类型（int, float, char, bool 等）
-- 枚举类型（enum, enum class）
-- 类型修饰符（signed, unsigned, short, long）
-- 自定义类型（typedef, using）
-- 隐式类型转换
-- 显式类型转换（C 风格）
-- C++ 风格类型转换（static_cast, const_cast, reinterpret_cast, dynamic_cast）
+---
 
-数组与字符串
+# 2.面向过程编程
 
-- 一维数组与多维数组
-- 字符数组与字符串字面量
-- C 风格字符串
-- std::string 简介
-
-变量与常量
-
-- 变量定义与初始化
-- const 变量
-- constexpr
-- static 变量
-- 全局变量与局部变量
-
-运算符
-
-- 算术运算符
-- 关系运算符
-- 逻辑运算符
-- 位运算符
-- 赋值运算符
-- 复合赋值运算符
-- 条件（三目）运算符
-- sizeof 运算符
-- 类型转换运算符
-
-控制结构
-
-- 条件语句（if, else if, else）
-- 多分支语句（switch-case）
-- 循环语句（for, while, do-while）
-- 跳转语句（break, continue, goto, return）
-
-函数基础
+<details>
+<summary>函数基础</summary>
 
 - 函数定义与声明
 - 形参与实参
@@ -63,34 +213,6 @@
 - 函数重载
 - 递归函数
 - 内联函数（inline）
-
-指针与引用
-
-- 指针声明与使用
-- 空指针与野指针
-- 指针与数组的关系
-- 指针与函数
-- 引用定义与引用传递
-
-输入输出
-
-- 标准输入输出（cin, cout）
-- 标准错误（cerr, clog）
-- 输入输出格式控制
-- 文件输入输出（ifstream, ofstream）
-
-基础语法中的现代特性（C++11 起）
-
-- auto 类型推导
-- 范围 for 循环
-- 初始化列表
-- nullptr 替代 NULL
-- 统一初始化语法 {}
-
-</details>
-
-<details>
-<summary>2.面向过程编程</summary>
 
 编程思想
 
@@ -147,8 +269,9 @@
 - 主函数中组织测试入口
 - 简单日志打印调试
 
-
 </details>
+
+# 3.面向对象编程
 
 <details>
 <summary>3.面向对象编程</summary>

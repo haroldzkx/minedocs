@@ -36,7 +36,7 @@ torch.utils
 - torch.utils.data.Dataset: 创建、保存数据集
 - torch.utils.data.DataLoder: 包含对数据集的一些操作，比如 batch 操作(每次取数据集中的一小批)，shuffle 操作(随机取样)。
 
-![架构图](./images/torch.1.png)
+![架构图](https://gitee.com/haroldzkx/pbed1/raw/main/py/torch.1.png)
 
 网络模块
 
@@ -56,7 +56,7 @@ torch.utils
 
 更直观地理解可以见下图。
 
-![](./images/torch.2.jpg)
+![](https://gitee.com/haroldzkx/pbed1/raw/main/py/torch.2.jpg)
 
 - 0 维张量：标量
 - 1 维张量：vector
