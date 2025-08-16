@@ -2,6 +2,13 @@
 
 用户登录服务可以抽离成一个单独的 gRPC 服务，用 Python / C++ 实现
 
+# Pipeline - Web
+
+1. 前端：React
+2. 后端：REST API ( FastAPI ) + gRPC API ( cpp 实现，Python 实现 )
+3. ORM：SQLAlchemy, ODB
+4. 数据库：MySQL, PostgreSQL, Redis
+
 # FastAPI
 
 API数据接口
