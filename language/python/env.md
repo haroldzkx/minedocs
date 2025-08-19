@@ -55,9 +55,8 @@ pip install path/to/*.whl
 <summary>离线安装 uv</summary>
 
 ```bash
-# 进入下面这个连接，下载合适的 uv 版本
-# https://github.com/astral-sh/uv/releases/tag/0.8.0
-# 例如下载了：uv-x86_64-unknown-linux-gnu.tar.gz
+# 下载合适的 uv 版本
+wget https://github.com/astral-sh/uv/releases/download/0.8.12/uv-x86_64-unknown-linux-gnu.tar.gz
 
 # Linux / Mac
 # 1.解压到指定目录
@@ -80,22 +79,27 @@ source ~/.bashrc
 <summary>uv 离线安装 python</summary>
 
 ```bash
-# 注意：要搞明白 uv 的版本如何和日期对应
-
-# 进入下面这个连接，下载合适的 Python 版本
-# https://github.com/astral-sh/python-build-standalone/releases
-mkdir -p ~/Downloads/20250723/
-cd ~/Downloads/20250723/
-
-# Windows (msvc)
-wget https://github.com/astral-sh/python-build-standalone/releases/download/20250723/cpython-3.9.23+20250723-x86_64-pc-windows-msvc-install_only_stripped.tar.gz
-
-uv python install --mirror file:///C:/Users/xxx/Downloads/ 3.9.23
-
-# Linux (gnu)
-wget https://github.com/astral-sh/python-build-standalone/releases/download/20250723/cpython-3.9.23+20250723-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
-
+# 1. 使用这个命令获取 日期 和 文件名
 uv python install --mirror file:///home/xxx/ 3.9.23
+# $ uv python install --mirror file:///home 3.9.23 
+# error: Failed to install cpython-3.9.23-linux-x86_64-gnu 
+#   Caused by: failed to query metadata of file /home/20250723/cpython-3.9.23+20250723-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz: No such file or directory (os error 2)
+# 日期：20250723
+# 文件名：cpython-3.9.23+20250723-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+
+# 2. 下载合适的 Python 版本（根据日期和文件名构造下载链接）
+wget https://github.com/astral-sh/python-build-standalone/releases/download/日期/文件名
+
+# 3. 构造目录
+mkdir -p ~/Downloads/日期/
+cd ~/Downloads/日期/
+mv ~/Downloads/文件名 ~/Downloads/日期/文件名
+
+# 4. Linux (gnu)
+uv python install --mirror file:///home/xxx/ 3.9.23
+
+# 4. Windows (msvc)
+uv python install --mirror file:///C:/Users/xxx/Downloads/ 3.9.23
 ```
 
 </details>
@@ -121,7 +125,11 @@ uv python list
 <summary>uv 项目更换国内镜像源</summary>
 
 ```bash
-# 这两种方案 二选一
+# 临时使用
+uv pip install numpy --default-index https://mirrors.ustc.edu.cn/pypi/simple
+uv add numpy --default-index https://mirrors.ustc.edu.cn/pypi/simple
+
+# 项目级别使用：两种方案 二选一
 # 1.在项目目录下的 pyproject.toml 中添加
 [[tool.uv.index]]
 url = "https://mirrors.ustc.edu.cn/pypi/simple"

@@ -44,12 +44,14 @@ flowchart TD
 ```bash
 wget https://gitee.com/haroldzkx/repo/releases/download/debian/debian.base.sh
 wget https://gitee.com/haroldzkx/repo/releases/download/debian/debian.docker.sh
+wget https://gitee.com/haroldzkx/repo/releases/download/debian/debian.python.sh
 
 su root
-chmod +x debian.base.sh debian.docker.sh
+chmod +x debian.base.sh debian.docker.sh debian.python.sh
 
 ./debian.bash.sh
 ./debian.docker.sh
+./debian.python.sh
 ```
 
 </details>
