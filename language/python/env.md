@@ -80,23 +80,22 @@ source ~/.bashrc
 <summary>uv 离线安装 python</summary>
 
 ```bash
+# 注意：要搞明白 uv 的版本如何和日期对应
+
 # 进入下面这个连接，下载合适的 Python 版本
 # https://github.com/astral-sh/python-build-standalone/releases
+mkdir -p ~/Downloads/20250723/
+cd ~/Downloads/20250723/
 
-# 例如：
-# Linux(x86_64): cpython-3.11.13+20250612-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
-# Windows(x86_64): cpython-3.11.13+20250612-x86_64-pc-windows-msvc-install_only_stripped.tar.gz
+# Windows (msvc)
+wget https://github.com/astral-sh/python-build-standalone/releases/download/20250723/cpython-3.9.23+20250723-x86_64-pc-windows-msvc-install_only_stripped.tar.gz
 
-# 安装 Python
-sudo mkdir -p /usr/local/python-build-standalone/python3.11.13
-# 解压 Python
-tar -xzf cpython-3.11.13+2025-612-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz \
-  --strip-components=1 \
-  -C /usr/local/python-build-standalone/python3.11.13
-# 配置 Python
-export PATH="/usr/local/python-build-standalone/python3.11.13/bin:$PATH"
+uv python install --mirror file:///C:/Users/xxx/Downloads/ 3.9.23
 
-uv python list
+# Linux (gnu)
+wget https://github.com/astral-sh/python-build-standalone/releases/download/20250723/cpython-3.9.23+20250723-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+
+uv python install --mirror file:///home/xxx/ 3.9.23
 ```
 
 </details>
