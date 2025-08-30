@@ -228,6 +228,18 @@ flush privileges;
 
 </details>
 
+<details>
+<summary>修改 root 远程登录权限</summary>
+
+```bash
+USE mysql;
+SELECT User, Host FROM user WHERE User = 'root';
+UPDATE user SET Host = '%' WHERE User = 'root' AND Host = 'localhost';
+FLUSH PRIVILEGES;
+```
+
+</details>
+
 # 锁机制
 
 在电商秒杀等高并发场景中，多个用户同时秒杀同一件商品，如果不加锁，那么可能会出现数据异常或者超卖的现象，为此针对这些数据，需要加入锁机制。
