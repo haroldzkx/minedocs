@@ -1,8 +1,5 @@
 ```bash
 docker pull registry.cn-shenzhen.aliyuncs.com/haroldfinch/IMAGE:TAG
-
-# arm 版本的在 tag 后面加上 -arm 就可以了
-docker pull registry.cn-shenzhen.aliyuncs.com/haroldfinch/IMAGE:TAG-arm
 ```
 
 # 操作系统
