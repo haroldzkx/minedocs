@@ -14,11 +14,11 @@ git pull origin main --rebase
 # Linux / MacOS
 git add . && git commit -m "update" && git push && git log --oneline
 git add . && git commit -m "update"
-git add . && git commit -m "local update"
+git add . && git commit -m "local update" && git log --oneline
 # Windows
 git add . ; git commit -m "update" ; git push ; git log --oneline
 git add . ; git commit -m "update"
-git add . ; git commit -m "local update"
+git add . ; git commit -m "local update" ; git log --oneline
 
 ### steps
 git add .

@@ -13,7 +13,7 @@
 ```bash
 # 离线安装 nvm
 
-wget https://gitee.com/haroldzkx/board/releases/download/nvm/nvm-0.40.3.tar.gz
+wget https://gitee.com/haroldzkx/repo/releases/download/nvm/nvm-0.40.3.tar.gz
 # 也可以去官网这里下载 nvm 的源码包
 # https://github.com/nvm-sh/nvm/releases
 
@@ -21,7 +21,7 @@ mkdir -p ~/.nvm
 tar -zxvf nvm-0.40.3.tar.gz -C ~/.nvm
 
 # 在 .bashrc 或 .bash_aliases 里添加如下内容
-export NVM_DIR="~/.nvm/nvm-0.40.3"
+export NVM_DIR="/home/happy/.nvm/nvm-0.40.3"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 

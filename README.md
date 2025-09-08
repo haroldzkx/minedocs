@@ -1,4 +1,10 @@
-> 一定要精简，找到真正需要用到的，用到的才学，在精不在多，杂念不能太多【可做可不做那就都不要做】，精力是有限的
+逆水行舟，顺势而为
+
+# 源码
+
+## Nginx
+
+[Nginx源码注解](https://gitee.com/haroldzkx/nginx.1.28)
 
 # Tools
 
@@ -88,6 +94,5 @@
 [OAuth](./backend/oauth.md)
 
 [RBAC](./backend/rbac.md)
-
 
 [支付宝支付接口](./backend/alipay.md)

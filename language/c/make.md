@@ -4,11 +4,22 @@
 <summary>MinGW make</summary>
 
 ```bash
+# 方法1
 # Windows 上使用的是 mingw32-make 命令，不是 make 命令
 mingw32-make
 mingw32-make run
 mingw32-make clean
 mingw32-make help
+```
+
+```bash
+# 方法2
+# 将 mingw64/bin/mingw32-make.exe 复制一份，重命名为 mingw64/bin/make.exe
+# 然后就可以执行下面的命令
+make
+make run
+make clean
+make help
 ```
 
 </details>
