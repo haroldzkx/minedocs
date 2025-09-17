@@ -279,14 +279,14 @@ docker run -d
 
 ```bash
 # 1.检查卸载老版本 docker
-sudo apt-get remove docker docker-engine docker.io containerd runc
+sudo apt remove docker docker-engine docker.io containerd runc
 
 # 2.更新软件包
-sudo apt-get update
-sudo apt-get upgrade
+sudo apt update
+sudo apt upgrade
 
 # 3.安装 docker 依赖
-sudo apt-get install ca-certificates curl gnupg lsb-release apt-transport-https software-properties-common
+sudo apt install apt-transport-https ca-certificates curl software-properties-common gnupg lsb-release
 
 # 4.添加 docker 密钥
 # 使用curl下载GPG密钥
@@ -300,7 +300,7 @@ rm docker-ce.gpg
 sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
 
 # 6.安装docker
-apt-get install docker-ce docker-ce-cli containerd.io
+apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # 7.配置用户组然后重启系统
 sudo usermod -aG docker $USER

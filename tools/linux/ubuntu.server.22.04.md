@@ -218,6 +218,43 @@ TimeoutStartSec=2sec
 
 # 软件安装
 
+## Docker
+
+```bash
+# 1.检查卸载老版本 docker
+sudo apt remove docker docker-engine docker.io containerd runc
+
+# 2.更新软件包
+sudo apt update
+sudo apt upgrade
+
+# 3.安装 docker 依赖
+sudo apt install apt-transport-https ca-certificates curl software-properties-common gnupg lsb-release
+
+# 4.添加 docker 密钥
+# 使用curl下载GPG密钥
+curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg -o docker-ce.gpg
+# 将下载的GPG密钥转换为适合trusted.gpg.d目录的格式
+sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/docker-ce-archive-keyring.gpg docker-ce.gpg
+# 删除之前下载的未处理的GPG密钥文件（可选）
+rm docker-ce.gpg
+
+# 5.添加阿里云 docker 软件源
+sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
+
+# 6.安装docker
+apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+# 7.配置用户组然后重启系统
+sudo usermod -aG docker $USER
+sudo reboot
+
+# 8.检验 docker 是否安装成功
+systemctl start docker
+service docker restart
+docker run hello-world
+```
+
 ## quickq VPN
 
 ```bash
