@@ -155,6 +155,13 @@ RUN cp /etc/apt/sources.list /etc/apt/sources.list.bak && \
     apt update
 ```
 
+```dockerfile
+# Ubuntu 22.04 换为 腾讯云源
+RUN sed -i 's/archive.ubuntu.com/mirrors.cloud.tencent.com/g' /etc/apt/sources.list && \
+    sed -i 's/security.ubuntu.com/mirrors.cloud.tencent.com/g' /etc/apt/sources.list && \
+    apt update
+```
+
 ## 构建镜像
 
 ```yaml
