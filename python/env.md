@@ -165,7 +165,64 @@ uv venv your_name --python 3.12.0
 uv run xxx.py
 uv run --python 3.x xxx.py	# 指定版本运行脚本
 
-#----- 依赖管理 -----
+```
+
+</details>
+
+<details>
+<summary>初始化项目</summary>
+
+```bash
+mkdir project_name
+cd project_name
+uv init
+
+# 1. 初始化时指定项目名称（若不指定，默认使用当前文件夹名称）
+uv init my_custom_project
+
+# 2. 指定项目使用的Python版本（如3.11，uv会自动查找或安装对应版本）
+uv init --python 3.11
+
+# 3. 初始化时直接添加依赖（如requests）
+uv init --add requests
+
+# 4. 初始化时添加开发依赖（如pytest）
+uv init --dev pytest
+```
+
+```bash
+# 场景1：项目有 requirements.txt
+cd my_existing_project
+uv init
+uv add --requirements requirements.txt
+uv add --dev --requirements requirements-dev.txt
+uv sync
+
+# 场景 2：项目有 setup.py/setup.cfg
+cd my_existing_project
+uv init
+# 导入setup.py中的依赖（uv会自动解析）
+uv add --from-setup-py
+uv sync
+
+# 场景 3：项目没有任何依赖配置（只有代码）
+cd my_existing_project
+uv init
+uv add requests pandas
+uv add --dev pytest
+
+# 场景 4：项目已有 pyproject.toml
+cd my_existing_project
+uv sync
+uv add numpy # 后续用uv add/uv remove管理依赖即可
+```
+
+</details>
+
+<details>
+<summary>依赖管理</summary>
+
+```bash
 uv add requests
 uv add 'requests==2.31.0'
 uv add git+https://github.com/psf/requests
@@ -179,11 +236,12 @@ uv pip install -r requirements.txt
 uv pip install -e .	# 从 pyproject.toml 安装
 uv pip install -r requirements.txt --parallel		# 并行安装依赖
 uv pip install numpy --cache-dir ~/.uv/cache		# 使用缓存安装
-
-#----- 项目管理 -----
-uv init project_name
-
 ```
+
+uv add xxx 与 uv pip install xxx 的区别
+
++ uv add xxx 安装包的同时会将其写入项目的依赖配置文件（如 `pyproject.toml`），适合项目开发中添加正式依赖
++ uv pip install xxx 仅安装包到环境中，不修改依赖配置文件 pyproject.toml ，适合临时安装包或兼容原有 pip 工作流（uv pip install xxx属于 uv 对 `pip install` 的**兼容封装命令**，行为几乎和原生 `pip install xxx` 一致）
 
 </details>
 
