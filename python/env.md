@@ -173,6 +173,13 @@ uv run --python 3.x xxx.py	# 指定版本运行脚本
 <summary>初始化项目</summary>
 
 ```bash
+# 快速创建步骤
+uv python pip 3.x
+uv init --vcs none  # 不创建git库初始化
+uv venv
+```
+
+```bash
 mkdir project_name
 cd project_name
 uv init
